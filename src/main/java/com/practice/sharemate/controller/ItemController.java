@@ -1,11 +1,13 @@
-package com.practice.sharemate.item;
+package com.practice.sharemate.controller;
 
+import com.practice.sharemate.dto.ItemDTO;
+import com.practice.sharemate.service.ItemService;
+import com.practice.sharemate.model.Item;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,8 +16,8 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public Collection<ItemDTO> findAllItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.findAllItems(userId);
+    public List<ItemDTO> findAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemService.findAll(userId);
     }
 
     @GetMapping("/{itemId}")
@@ -24,10 +26,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public Collection<ItemDTO> getItemByNameOrDescription(@RequestParam String text) {
-        if (text.isEmpty()) {
-            return Collections.emptyList();
-        }
+    public List<ItemDTO> getItemByNameOrDescription(@RequestParam String text) {
         return itemService.getItemByNameOrDescription(text);
     }
 
