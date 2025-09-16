@@ -1,5 +1,7 @@
-package com.practice.sharemate.dto;
+package com.practice.sharemate.mapper;
 
+import com.practice.sharemate.dto.BookingDTO;
+import com.practice.sharemate.model.BookingRequest;
 import com.practice.sharemate.model.Booking;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

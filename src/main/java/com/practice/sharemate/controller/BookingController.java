@@ -1,7 +1,7 @@
 package com.practice.sharemate.controller;
 
 import com.practice.sharemate.dto.BookingDTO;
-import com.practice.sharemate.dto.BookingRequest;
+import com.practice.sharemate.model.BookingRequest;
 import com.practice.sharemate.service.BookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

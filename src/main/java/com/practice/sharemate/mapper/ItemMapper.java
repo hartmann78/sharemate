@@ -1,5 +1,6 @@
-package com.practice.sharemate.dto;
+package com.practice.sharemate.mapper;
 
+import com.practice.sharemate.dto.ItemDTO;
 import com.practice.sharemate.model.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,6 @@
-package com.practice.sharemate.dto;
+package com.practice.sharemate.mapper;
 
+import com.practice.sharemate.dto.CommentDTO;
 import com.practice.sharemate.model.Comment;
 import org.springframework.stereotype.Component;
 

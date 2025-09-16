@@ -1,8 +1,8 @@
 package com.practice.sharemate.service.impl;
 
 import com.practice.sharemate.dto.BookingDTO;
-import com.practice.sharemate.dto.BookingRequest;
-import com.practice.sharemate.dto.BookingMapper;
+import com.practice.sharemate.model.BookingRequest;
+import com.practice.sharemate.mapper.BookingMapper;
 import com.practice.sharemate.exceptions.*;
 import com.practice.sharemate.model.Booking;
 import com.practice.sharemate.model.Item;

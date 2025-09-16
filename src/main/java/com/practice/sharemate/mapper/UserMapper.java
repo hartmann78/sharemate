@@ -1,5 +1,6 @@
-package com.practice.sharemate.dto;
+package com.practice.sharemate.mapper;
 
+import com.practice.sharemate.dto.UserDTO;
 import com.practice.sharemate.model.User;
 import org.springframework.stereotype.Component;
 

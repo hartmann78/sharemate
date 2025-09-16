@@ -1,7 +1,7 @@
 package com.practice.sharemate.service.impl;
 
 import com.practice.sharemate.dto.CommentDTO;
-import com.practice.sharemate.dto.CommentMapper;
+import com.practice.sharemate.mapper.CommentMapper;
 import com.practice.sharemate.exceptions.BadRequestException;
 import com.practice.sharemate.exceptions.ItemNotFoundException;
 import com.practice.sharemate.exceptions.UserNotFoundException;

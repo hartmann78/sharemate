@@ -1,7 +1,7 @@
 package com.practice.sharemate.service.impl;
 
 import com.practice.sharemate.dto.ItemDTO;
-import com.practice.sharemate.dto.ItemMapper;
+import com.practice.sharemate.mapper.ItemMapper;
 import com.practice.sharemate.exceptions.BadRequestException;
 import com.practice.sharemate.exceptions.ForbiddenException;
 import com.practice.sharemate.exceptions.ItemNotFoundException;
@@ -10,7 +10,7 @@ import com.practice.sharemate.repository.ItemRepository;
 import com.practice.sharemate.model.Item;
 import com.practice.sharemate.service.ItemService;
 import com.practice.sharemate.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,12 +18,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Setter
 @Service
-@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-    private final ItemMapper itemMapper;
-    private final ItemRepository itemRepository;
-    private final UserRepository userRepository;
+    private ItemMapper itemMapper;
+    private ItemRepository itemRepository;
+    private UserRepository userRepository;
 
     @Override
     public List<ItemDTO> findAll(Long userId) {

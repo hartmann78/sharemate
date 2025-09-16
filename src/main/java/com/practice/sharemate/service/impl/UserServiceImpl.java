@@ -1,7 +1,7 @@
 package com.practice.sharemate.service.impl;
 
 import com.practice.sharemate.dto.UserDTO;
-import com.practice.sharemate.dto.UserMapper;
+import com.practice.sharemate.mapper.UserMapper;
 import com.practice.sharemate.exceptions.BadRequestException;
 import com.practice.sharemate.exceptions.EmailExistsException;
 import com.practice.sharemate.exceptions.UserNotFoundException;

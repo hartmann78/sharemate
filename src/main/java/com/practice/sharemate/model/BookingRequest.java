@@ -1,4 +1,4 @@
-package com.practice.sharemate.dto;
+package com.practice.sharemate.model;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

@@ -41,12 +41,6 @@ public class Booking {
     @JoinColumn(name = "item_id", referencedColumnName = "id")
     private Item item;
 
-    public enum BookingStatus {
-        APPROVED,
-        REJECTED,
-        WAITING
-    }
-
     @Override
     public String toString() {
         return "Booking{" +
@@ -58,5 +52,11 @@ public class Booking {
                 ", item_id=" + item.getId() +
                 ", item_name=" + item.getName() +
                 '}';
+    }
+
+    public enum BookingStatus {
+        APPROVED,
+        REJECTED,
+        WAITING
     }
 }

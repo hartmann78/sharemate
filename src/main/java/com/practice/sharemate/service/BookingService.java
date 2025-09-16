@@ -1,7 +1,7 @@
 package com.practice.sharemate.service;
 
 import com.practice.sharemate.dto.BookingDTO;
-import com.practice.sharemate.dto.BookingRequest;
+import com.practice.sharemate.model.BookingRequest;
 
 import java.util.List;
 
