@@ -9,6 +9,7 @@ import com.practice.sharemate.model.User;
 import com.practice.sharemate.service.UserService;
 import com.practice.sharemate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

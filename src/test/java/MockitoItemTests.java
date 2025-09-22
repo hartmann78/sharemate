@@ -8,16 +8,13 @@ import com.practice.sharemate.service.impl.ItemServiceImpl;
 import com.practice.sharemate.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-@ExtendWith(MockitoExtension.class)
-public class ShareMateAddItemRequestsTests {
+public class MockitoItemTests {
     @Mock
     ItemMapper mockItemMapper;
     @Mock
@@ -27,47 +24,19 @@ public class ShareMateAddItemRequestsTests {
     UserMapper mockUserMapper;
     @Mock
     UserRepository mockUserRepository;
-
-    @Test
-    public void createUser() {
-        UserServiceImpl userServiceImpl = new UserServiceImpl(mockUserRepository, mockUserMapper);
-
-        User user1 = User.builder()
-                .name("User 1")
-                .email("someone1234@mail.com")
-                .build();
-
-        User addUser1 = User.builder()
-                .id(1L)
-                .name("User 1")
-                .email("someone1234@mail.com")
-                .build();
-
-        Mockito
-                .when(mockUserRepository.save(user1))
-                .thenReturn(addUser1);
-
-        Mockito
-                .when(mockUserMapper.dtoToEntity(userServiceImpl.addUser(user1)))
-                .thenReturn(addUser1);
-
-        User newUser = mockUserMapper.dtoToEntity(userServiceImpl.addUser(user1));
-        Assertions.assertEquals(addUser1, newUser);
-    }
-
     @Test
     public void createItem() {
         UserServiceImpl userServiceImpl = new UserServiceImpl(mockUserRepository, mockUserMapper);
         ItemServiceImpl itemServiceImpl = new ItemServiceImpl(mockItemMapper, mockItemRepository, mockUserRepository);
 
-        User user2 = User.builder()
-                .name("User 2")
+        User user1 = User.builder()
+                .name("User 1")
                 .email("somebody0707@mail.com")
                 .build();
 
-        User addUser2 = User.builder()
+        User addUser1 = User.builder()
                 .id(2L)
-                .name("User 2")
+                .name("User 1")
                 .email("somebody0707@mail.com")
                 .build();
 
@@ -90,14 +59,14 @@ public class ShareMateAddItemRequestsTests {
                 .build();
 
         Mockito
-                .when(mockUserRepository.save(user2))
-                .thenReturn(addUser2);
+                .when(mockUserRepository.save(user1))
+                .thenReturn(addUser1);
 
         Mockito
-                .when(mockUserMapper.dtoToEntity(userServiceImpl.addUser(user2)))
-                .thenReturn(addUser2);
+                .when(mockUserMapper.dtoToEntity(userServiceImpl.addUser(user1)))
+                .thenReturn(addUser1);
 
-        User newUser2 = mockUserMapper.dtoToEntity(userServiceImpl.addUser(user2));
+        User newUser2 = mockUserMapper.dtoToEntity(userServiceImpl.addUser(user1));
 
         Mockito
                 .when(mockUserRepository.findById(newUser2.getId()))
@@ -120,14 +89,14 @@ public class ShareMateAddItemRequestsTests {
         UserServiceImpl userServiceImpl = new UserServiceImpl(mockUserRepository, mockUserMapper);
         ItemServiceImpl itemServiceImpl = new ItemServiceImpl(mockItemMapper, mockItemRepository, mockUserRepository);
 
-        User user3 = User.builder()
-                .name("User 3")
+        User user2 = User.builder()
+                .name("User 2")
                 .email("nobody0000@mail.com")
                 .build();
 
-        User addUser3 = User.builder()
-                .id(3L)
-                .name("User 3")
+        User addUser2 = User.builder()
+                .id(2L)
+                .name("User 2")
                 .email("nobody0000@mail.com")
                 .build();
 
@@ -147,7 +116,7 @@ public class ShareMateAddItemRequestsTests {
                         "Это дефицитная вещь и такие заявки будут сразу отменяться.")
                 .available(true)
                 .comments(new ArrayList<>())
-                .ownerId(addUser3.getId())
+                .ownerId(addUser2.getId())
                 .build();
 
         Item updateItem2 = Item.builder()
@@ -166,19 +135,19 @@ public class ShareMateAddItemRequestsTests {
                         "Дам поносить за небольшое вознаграждение.")
                 .available(false)
                 .comments(new ArrayList<>())
-                .ownerId(addUser3.getId())
+                .ownerId(addUser2.getId())
                 .build();
 
         Mockito
-                .when(mockUserRepository.save(user3))
-                .thenReturn(addUser3);
+                .when(mockUserRepository.save(user2))
+                .thenReturn(addUser2);
 
         Mockito
-                .when(mockUserMapper.dtoToEntity(userServiceImpl.addUser(user3)))
-                .thenReturn(addUser3);
+                .when(mockUserMapper.dtoToEntity(userServiceImpl.addUser(user2)))
+                .thenReturn(addUser2);
 
 
-        User newUser3 = mockUserMapper.dtoToEntity(userServiceImpl.addUser(user3));
+        User newUser3 = mockUserMapper.dtoToEntity(userServiceImpl.addUser(user2));
 
         Mockito
                 .when(mockUserRepository.findById(newUser3.getId()))

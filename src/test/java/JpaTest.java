@@ -13,7 +13,7 @@ import java.util.Optional;
 // to explicitly declare the configuration classes to load. Classes annotated with @TestConfiguration are not considered.
 
 @DataJpaTest
-public class RepositoryTest {
+public class JpaTest {
     @Autowired
     private UserRepository userRepository;
 
