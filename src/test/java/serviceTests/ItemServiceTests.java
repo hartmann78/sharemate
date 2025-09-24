@@ -1,3 +1,5 @@
+package serviceTests;
+
 import com.practice.sharemate.mapper.ItemMapper;
 import com.practice.sharemate.mapper.UserMapper;
 import com.practice.sharemate.model.Item;
@@ -14,7 +16,7 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class MockitoItemTests {
+public class ItemServiceTests {
     @Mock
     ItemMapper mockItemMapper;
     @Mock

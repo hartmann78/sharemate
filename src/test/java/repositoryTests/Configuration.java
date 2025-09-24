@@ -1,4 +1,4 @@
-package dataJpaTest;
+package repositoryTests;
 
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
