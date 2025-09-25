@@ -18,4 +18,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "JOIN FETCH b.booker u " +
             "where u.id = ?1")
     List<Booking> findAllByBookerId(Long userId);
+
+    @Query(value = "SELECT EXISTS(select booker_id, owner_id " +
+            "from bookings b " +
+            "inner join items i on i.id = b.item_id " +
+            "where b.booker_id = ?1 " +
+            "or i.owner_id = ?1)", nativeQuery = true)
+    Boolean checkBookerOrOwnerId(Long userId);
 }

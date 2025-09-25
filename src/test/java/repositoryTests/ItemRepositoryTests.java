@@ -26,19 +26,19 @@ public class ItemRepositoryTests {
     @Test
     void createItem() {
         User user = userGenerator.generateUser();
-        User newUser = userRepository.save(user);
+        userRepository.save(user);
 
-        Item item = itemGenerator.generateItem(newUser.getId());
-        Item newItem = itemRepository.save(item);
+        Item item = itemGenerator.generateItem(user.getId());
+        itemRepository.save(item);
 
-        Optional<User> checkUser = userRepository.findById(newUser.getId());
+        Optional<User> checkUser = userRepository.findById(user.getId());
 
         Assertions.assertTrue(checkUser.isPresent());
-        Assertions.assertEquals(checkUser.get(), newUser);
+        Assertions.assertEquals(checkUser.get(), user);
 
-        Optional<Item> checkItem = itemRepository.findById(newItem.getId());
+        Optional<Item> checkItem = itemRepository.findById(item.getId());
 
         Assertions.assertTrue(checkItem.isPresent());
-        Assertions.assertEquals(checkItem.get(), newItem);
+        Assertions.assertEquals(checkItem.get(), item);
     }
 }

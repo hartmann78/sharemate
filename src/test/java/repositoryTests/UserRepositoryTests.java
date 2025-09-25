@@ -21,12 +21,12 @@ public class UserRepositoryTests {
     @Test
     void createUser() {
         User user = userGenerator.generateUser();
-        User newUser = userRepository.save(user);
+        userRepository.save(user);
 
-        Optional<User> checkUser = userRepository.findById(newUser.getId());
+        Optional<User> checkUser = userRepository.findById(user.getId());
 
         Assertions.assertTrue(checkUser.isPresent());
-        Assertions.assertEquals(checkUser.get(), newUser);
+        Assertions.assertEquals(checkUser.get(), user);
     }
 
     @Test
@@ -34,12 +34,12 @@ public class UserRepositoryTests {
         User user1 = userGenerator.generateUser();
         User user2 = userGenerator.generateUser();
 
-        User newUser1 = userRepository.save(user1);
-        User newUser2 = userRepository.save(user2);
+        userRepository.save(user1);
+        userRepository.save(user2);
 
         List<User> findAllUsers = userRepository.findAll();
 
-        Assertions.assertTrue(findAllUsers.contains(newUser1));
-        Assertions.assertTrue(findAllUsers.contains(newUser2));
+        Assertions.assertTrue(findAllUsers.contains(user1));
+        Assertions.assertTrue(findAllUsers.contains(user2));
     }
 }
