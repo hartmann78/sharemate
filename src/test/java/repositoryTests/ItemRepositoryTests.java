@@ -1,8 +1,10 @@
 package repositoryTests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import generators.ItemGenerator;
 import generators.UserGenerator;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -32,13 +34,11 @@ public class ItemRepositoryTests {
         itemRepository.save(item);
 
         Optional<User> checkUser = userRepository.findById(user.getId());
-
-        Assertions.assertTrue(checkUser.isPresent());
-        Assertions.assertEquals(checkUser.get(), user);
+        assertTrue(checkUser.isPresent());
+        assertEquals(checkUser.get(), user);
 
         Optional<Item> checkItem = itemRepository.findById(item.getId());
-
-        Assertions.assertTrue(checkItem.isPresent());
-        Assertions.assertEquals(checkItem.get(), item);
+        assertTrue(checkItem.isPresent());
+        assertEquals(checkItem.get(), item);
     }
 }

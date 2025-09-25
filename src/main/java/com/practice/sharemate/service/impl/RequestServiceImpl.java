@@ -2,9 +2,11 @@ package com.practice.sharemate.service.impl;
 
 import com.practice.sharemate.dto.RequestDTO;
 import com.practice.sharemate.exceptions.ItemNotFoundException;
+import com.practice.sharemate.exceptions.UserNotFoundException;
 import com.practice.sharemate.mapper.RequestMapper;
 import com.practice.sharemate.model.Request;
 import com.practice.sharemate.repository.RequestRepository;
+import com.practice.sharemate.repository.UserRepository;
 import com.practice.sharemate.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +26,17 @@ import java.util.Optional;
 public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
     private final RequestMapper requestMapper;
+    private final UserRepository userRepository;
 
     @Override
-    public List<RequestDTO> findAll() {
-        List<Request> requests = requestRepository.findAll();
+    public List<RequestDTO> findAll(Long userId) {
+        List<Request> requests;
+
+        if (userId == null) {
+            requests = requestRepository.findAll();
+        } else {
+            requests = requestRepository.findAllByRequestorId(userId);
+        }
 
         if (requests.isEmpty()) {
             return Collections.emptyList();
@@ -53,7 +63,11 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public RequestDTO findRequestById(Long requestId) {
+    public RequestDTO findUserRequestById(Long userId, Long requestId) {
+        if (userRepository.findById(userId).isEmpty()) {
+            throw new UserNotFoundException("Пользователь с id" + userId + " не найден!");
+        }
+
         Optional<Request> request = requestRepository.findById(requestId);
 
         if (request.isPresent()) {
@@ -64,8 +78,21 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public RequestDTO addRequest(Request request) {
+    public List<RequestDTO> findUserRequests(Long userId) {
+        return List.of();
+    }
+
+
+    @Override
+    public RequestDTO addRequest(Long userId, Request request) {
+        if (userRepository.findById(userId).isEmpty()) {
+            throw new UserNotFoundException("Пользователь с id" + userId + " не найден!");
+        }
+
+        request.setRequestorId(userId);
+        request.setAnswers(new ArrayList<>());
         request.setCreated(LocalDateTime.now());
+
         return requestMapper.entityToDto(requestRepository.save(request));
     }
 }

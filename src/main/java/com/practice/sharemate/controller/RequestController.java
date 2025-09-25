@@ -16,22 +16,22 @@ public class RequestController {
     private final RequestService requestService;
 
     @GetMapping
-    public List<RequestDTO> findAll() {
-        return requestService.findAll();
+    public List<RequestDTO> findAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return requestService.findAll(userId);
     }
 
     @GetMapping("/all")
-    public void findAll(@RequestParam int from, @RequestParam int size) {
+    public void findAllPagination(@RequestParam int from, @RequestParam int size) {
         requestService.findAll(from, size);
     }
 
     @GetMapping("/{requestId}")
-    public RequestDTO findRequestById(@PathVariable Long requestId) {
-        return requestService.findRequestById(requestId);
+    public RequestDTO findUserRequestById(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long requestId) {
+        return requestService.findUserRequestById(userId, requestId);
     }
 
     @PostMapping
-    public RequestDTO addRequest(@Valid @RequestBody Request request) {
-        return requestService.addRequest(request);
+    public RequestDTO addRequest(@RequestHeader("X-Sharer-User-Id") Long userId, @Valid @RequestBody Request request) {
+        return requestService.addRequest(userId, request);
     }
 }

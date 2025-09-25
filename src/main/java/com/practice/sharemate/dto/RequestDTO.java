@@ -1,16 +1,18 @@
 package com.practice.sharemate.dto;
 
+import com.practice.sharemate.model.Answer;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
 public class RequestDTO {
     private Long id;
-    private Long itemId;
+    private Long requestorId;
     private String description;
-    private Boolean available;
     private LocalDateTime created;
+    private List<Answer> answers;
 }

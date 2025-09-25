@@ -6,11 +6,13 @@ import com.practice.sharemate.model.Request;
 import java.util.List;
 
 public interface RequestService {
-    List<RequestDTO> findAll();
+    List<RequestDTO> findAll(Long userId);
 
     void findAll(int from, int size);
 
-    RequestDTO findRequestById(Long requestId);
+    RequestDTO findUserRequestById(Long userId, Long requestId);
 
-    RequestDTO addRequest(Request request);
+    List<RequestDTO> findUserRequests(Long userId);
+
+    RequestDTO addRequest(Long userId, Request request);
 }

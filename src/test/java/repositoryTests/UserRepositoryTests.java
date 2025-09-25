@@ -1,8 +1,10 @@
 package repositoryTests;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import generators.UserGenerator;
 import repositoryTests.model.User;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -24,9 +26,8 @@ public class UserRepositoryTests {
         userRepository.save(user);
 
         Optional<User> checkUser = userRepository.findById(user.getId());
-
-        Assertions.assertTrue(checkUser.isPresent());
-        Assertions.assertEquals(checkUser.get(), user);
+        assertTrue(checkUser.isPresent());
+        assertEquals(checkUser.get(), user);
     }
 
     @Test
@@ -38,8 +39,7 @@ public class UserRepositoryTests {
         userRepository.save(user2);
 
         List<User> findAllUsers = userRepository.findAll();
-
-        Assertions.assertTrue(findAllUsers.contains(user1));
-        Assertions.assertTrue(findAllUsers.contains(user2));
+        assertTrue(findAllUsers.contains(user1));
+        assertTrue(findAllUsers.contains(user2));
     }
 }

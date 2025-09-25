@@ -9,7 +9,6 @@ import com.practice.sharemate.model.User;
 import com.practice.sharemate.service.UserService;
 import com.practice.sharemate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -34,14 +33,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findUserById(Long id) {
-        Optional<User> user = userRepository.findById(id);
+    public UserDTO findUserById(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
 
         if (user.isPresent()) {
             return userMapper.entityToDto(user.get());
         }
 
-        throw new UserNotFoundException("Пользователь с id" + id + " не найден!");
+        throw new UserNotFoundException("Пользователь с id" + userId + " не найден!");
     }
 
     @Override
@@ -92,7 +91,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
     }
 }

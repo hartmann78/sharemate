@@ -12,10 +12,10 @@ public class RequestMapper {
     public RequestDTO entityToDto(Request request) {
         return RequestDTO.builder()
                 .id(request.getId())
-                .itemId(request.getItemId())
+                .requestorId(request.getRequestorId())
                 .description(request.getDescription())
-                .available(request.getAvailable())
                 .created(request.getCreated())
+                .answers(request.getAnswers())
                 .build();
     }
 
