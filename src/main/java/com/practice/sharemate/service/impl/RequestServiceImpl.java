@@ -78,12 +78,6 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<RequestDTO> findUserRequests(Long userId) {
-        return List.of();
-    }
-
-
-    @Override
     public RequestDTO addRequest(Long userId, Request request) {
         if (userRepository.findById(userId).isEmpty()) {
             throw new UserNotFoundException("Пользователь с id" + userId + " не найден!");

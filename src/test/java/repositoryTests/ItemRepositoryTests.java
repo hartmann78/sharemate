@@ -35,10 +35,10 @@ public class ItemRepositoryTests {
 
         Optional<User> checkUser = userRepository.findById(user.getId());
         assertTrue(checkUser.isPresent());
-        assertEquals(checkUser.get(), user);
+        assertEquals(user, checkUser.get());
 
         Optional<Item> checkItem = itemRepository.findById(item.getId());
         assertTrue(checkItem.isPresent());
-        assertEquals(checkItem.get(), item);
+        assertEquals(item, checkItem.get());
     }
 }

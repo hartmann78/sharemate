@@ -12,7 +12,5 @@ public interface RequestService {
 
     RequestDTO findUserRequestById(Long userId, Long requestId);
 
-    List<RequestDTO> findUserRequests(Long userId);
-
     RequestDTO addRequest(Long userId, Request request);
 }

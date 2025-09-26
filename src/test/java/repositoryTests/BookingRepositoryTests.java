@@ -55,19 +55,19 @@ public class BookingRepositoryTests {
 
         Optional<User> checkOwner = userRepository.findById(owner.getId());
         assertTrue(checkOwner.isPresent());
-        assertEquals(checkOwner.get(), owner);
+        assertEquals(owner, checkOwner.get());
 
         Optional<User> checkBooker = userRepository.findById(booker.getId());
         assertTrue(checkBooker.isPresent());
-        assertEquals(checkBooker.get(), booker);
+        assertEquals(booker, checkBooker.get());
 
         Optional<Item> checkItem = itemRepository.findById(item.getId());
         assertTrue(checkItem.isPresent());
-        assertEquals(checkItem.get(), item);
+        assertEquals(item, checkItem.get());
 
         Optional<Booking> checkBooking = bookingRepository.findById(booking.getId());
         assertTrue(checkBooking.isPresent());
-        assertEquals(checkBooking.get(), booking);
+        assertEquals(booking, checkBooking.get());
     }
 
     @Test
@@ -90,15 +90,15 @@ public class BookingRepositoryTests {
 
         Optional<User> checkOwner = userRepository.findById(owner.getId());
         assertTrue(checkOwner.isPresent());
-        assertEquals(checkOwner.get(), owner);
+        assertEquals(owner, checkOwner.get());
 
         Optional<User> checkBooker = userRepository.findById(booker.getId());
         assertTrue(checkBooker.isPresent());
-        assertEquals(checkBooker.get(), booker);
+        assertEquals(booker, checkBooker.get());
 
         Optional<Item> checkItem = itemRepository.findById(item.getId());
         assertTrue(checkItem.isPresent());
-        assertEquals(checkItem.get(), item);
+        assertEquals(item, checkItem.get());
 
         List<Booking> getUserBookings = bookingRepository.findAll();
         assertTrue(getUserBookings.contains(booking));
@@ -124,21 +124,21 @@ public class BookingRepositoryTests {
 
         Optional<User> checkOwner = userRepository.findById(owner.getId());
         assertTrue(checkOwner.isPresent());
-        assertEquals(checkOwner.get(), owner);
+        assertEquals(owner, checkOwner.get());
 
         Optional<User> checkBooker = userRepository.findById(booker.getId());
         assertTrue(checkBooker.isPresent());
-        assertEquals(checkBooker.get(), booker);
+        assertEquals(booker, checkBooker.get());
 
         Optional<Item> checkItem = itemRepository.findById(item.getId());
         assertTrue(checkItem.isPresent());
-        assertEquals(checkItem.get(), item);
+        assertEquals(item, checkItem.get());
 
-        assertTrue(bookingRepository.checkBookerOrOwnerId(owner.getId()));
+        assertTrue(bookingRepository.checkBookerOrOwnerId(booker.getId()));
+
         Optional<Booking> getUserBookingById = bookingRepository.findById(booking.getId());
-
         assertTrue(getUserBookingById.isPresent());
-        assertEquals(getUserBookingById.get(), booking);
+        assertEquals(booking, getUserBookingById.get());
     }
 
     @Test
@@ -167,18 +167,18 @@ public class BookingRepositoryTests {
 
         Optional<User> checkOwner = userRepository.findById(owner.getId());
         assertTrue(checkOwner.isPresent());
-        assertEquals(checkOwner.get(), owner);
+        assertEquals(owner, checkOwner.get());
 
         Optional<User> checkBooker = userRepository.findById(booker.getId());
         assertTrue(checkBooker.isPresent());
-        assertEquals(checkBooker.get(), booker);
+        assertEquals(booker, checkBooker.get());
 
         Optional<Item> checkItem = itemRepository.findById(item.getId());
         assertTrue(checkItem.isPresent());
-        assertEquals(checkItem.get(), item);
+        assertEquals(item, checkItem.get());
 
         Optional<Booking> checkBooking = bookingRepository.findById(approveBooking.getId());
         assertTrue(checkBooking.isPresent());
-        assertEquals(checkBooking.get(), approveBooking);
+        assertEquals(approveBooking, checkBooking.get());
     }
 }

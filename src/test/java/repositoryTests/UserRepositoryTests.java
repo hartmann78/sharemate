@@ -27,7 +27,7 @@ public class UserRepositoryTests {
 
         Optional<User> checkUser = userRepository.findById(user.getId());
         assertTrue(checkUser.isPresent());
-        assertEquals(checkUser.get(), user);
+        assertEquals(user, checkUser.get());
     }
 
     @Test

@@ -44,14 +44,14 @@ public class DateGenerator {
     }
 
     public int randomHour() {
-        return random.nextInt(1, 25);
+        return random.nextInt(0, 24);
     }
 
     public int randomMinute() {
-        return random.nextInt(1, 61);
+        return random.nextInt(0, 60);
     }
 
     public int randomSecond() {
-        return random.nextInt(1, 61);
+        return random.nextInt(0, 60);
     }
 }
