@@ -137,6 +137,8 @@ public class BookingServiceImpl implements BookingService {
 
         if (approved == true) {
             booking.setStatus(Booking.BookingStatus.APPROVED);
+        } else {
+            booking.setStatus(Booking.BookingStatus.REJECTED);
         }
 
         return bookingMapper.entityToDto(bookingRepository.save(booking));

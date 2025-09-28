@@ -20,6 +20,18 @@ public class ItemGenerator {
                 .build();
     }
 
+    public Item generateItem(Long ownerId, Long requestId) {
+        return Item.builder()
+                .name(generateName())
+                .description(generateDescription())
+                .available(random.nextBoolean())
+                .ownerId(ownerId)
+                .requestId(requestId)
+                .bookings(new ArrayList<>())
+                .comments(new ArrayList<>())
+                .build();
+    }
+
     private String generateName() {
         return UUID.randomUUID().toString().substring(0, 8);
     }

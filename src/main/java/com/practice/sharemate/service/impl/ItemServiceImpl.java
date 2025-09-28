@@ -1,13 +1,11 @@
 package com.practice.sharemate.service.impl;
 
 import com.practice.sharemate.dto.ItemDTO;
+import com.practice.sharemate.exceptions.*;
 import com.practice.sharemate.mapper.ItemMapper;
-import com.practice.sharemate.exceptions.BadRequestException;
-import com.practice.sharemate.exceptions.ForbiddenException;
-import com.practice.sharemate.exceptions.ItemNotFoundException;
-import com.practice.sharemate.exceptions.UserNotFoundException;
 import com.practice.sharemate.repository.ItemRepository;
 import com.practice.sharemate.model.Item;
+import com.practice.sharemate.repository.RequestRepository;
 import com.practice.sharemate.service.ItemService;
 import com.practice.sharemate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +22,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final RequestRepository requestRepository;
 
     @Override
     public List<ItemDTO> findAll(Long userId) {
@@ -68,8 +67,13 @@ public class ItemServiceImpl implements ItemService {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
 
+        if (item.getRequestId() != null && requestRepository.findById(item.getRequestId()).isEmpty()) {
+            throw new RequestNotFoundException("Запрос с id " + item.getRequestId() + " не найден!");
+        }
+
         item.setOwnerId(userId);
         item.setComments(new ArrayList<>());
+        item.setBookings(new ArrayList<>());
 
         return itemMapper.entityToDto(itemRepository.save(item));
     }

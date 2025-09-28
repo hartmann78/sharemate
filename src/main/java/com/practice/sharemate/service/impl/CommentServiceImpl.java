@@ -1,13 +1,16 @@
 package com.practice.sharemate.service.impl;
 
 import com.practice.sharemate.dto.CommentDTO;
+import com.practice.sharemate.exceptions.ForbiddenException;
 import com.practice.sharemate.mapper.CommentMapper;
 import com.practice.sharemate.exceptions.BadRequestException;
 import com.practice.sharemate.exceptions.ItemNotFoundException;
 import com.practice.sharemate.exceptions.UserNotFoundException;
+import com.practice.sharemate.model.Booking;
 import com.practice.sharemate.model.Comment;
 import com.practice.sharemate.model.Item;
 import com.practice.sharemate.model.User;
+import com.practice.sharemate.repository.BookingRepository;
 import com.practice.sharemate.repository.CommentRepository;
 import com.practice.sharemate.repository.ItemRepository;
 import com.practice.sharemate.repository.UserRepository;
@@ -24,6 +27,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
 
     @Override
@@ -42,7 +46,13 @@ public class CommentServiceImpl implements CommentService {
             throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
         }
 
-        if (LocalDateTime.now().isBefore(commentRepository.findBooking(userId, itemId).getEnd())) {
+        Booking findBooking = bookingRepository.findBookingByBookerIdAndItemId(userId, itemId);
+
+        if (!findBooking.getStatus().equals(Booking.BookingStatus.APPROVED)) {
+            throw new ForbiddenException("Нельзя добавить комментарий без одобрения бронирования");
+        }
+
+        if (LocalDateTime.now().isBefore(findBooking.getEnd())) {
             throw new BadRequestException("Нельзя добавить комментарий до завершения бронирования!");
         }
 

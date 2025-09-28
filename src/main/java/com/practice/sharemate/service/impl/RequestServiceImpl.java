@@ -69,12 +69,11 @@ public class RequestServiceImpl implements RequestService {
         }
 
         Optional<Request> request = requestRepository.findById(requestId);
-
-        if (request.isPresent()) {
-            return requestMapper.entityToDto(request.get());
+        if (request.isEmpty()) {
+            throw new ItemNotFoundException("Запрос с id " + request + " не найден!");
         }
 
-        throw new ItemNotFoundException("Запрос с id " + request + " не найден!");
+        return requestMapper.entityToDto(request.get());
     }
 
     @Override

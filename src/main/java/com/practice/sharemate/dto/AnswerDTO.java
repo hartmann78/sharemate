@@ -3,13 +3,12 @@ package com.practice.sharemate.dto;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
-public class RequestDTO {
+public class AnswerDTO {
     private Long id;
-    private Long requestorId;
+    private Long itemId;
+    private Long requestId;
     private String description;
-    private LocalDateTime created;
+    private Boolean available;
 }

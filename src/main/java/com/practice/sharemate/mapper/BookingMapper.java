@@ -19,7 +19,6 @@ public class BookingMapper {
         return Booking.builder()
                 .start(bookingRequest.getStart())
                 .end(bookingRequest.getEnd())
-                .id(bookingRequest.getItemId())
                 .build();
     }
 

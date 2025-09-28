@@ -18,13 +18,25 @@ public class Answer {
     @Column(name = "item_id")
     private Long itemId;
 
-    @Column(name = "description")
-    private String description;
-
     @ManyToOne
     @JoinColumn(name = "request_id", referencedColumnName = "id")
     private Request request;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "is_available")
     private Boolean available;
+
+    @Override
+    public String toString() {
+        return "Answer{" +
+                "id=" + id +
+                ", itemId=" + itemId +
+                ", requestId=" + request.getId() +
+                ", description='" + description + '\'' +
+                ", available=" + available +
+                '}';
+    }
 }
+

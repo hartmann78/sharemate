@@ -15,7 +15,6 @@ public class RequestMapper {
                 .requestorId(request.getRequestorId())
                 .description(request.getDescription())
                 .created(request.getCreated())
-                .answers(request.getAnswers())
                 .build();
     }
 

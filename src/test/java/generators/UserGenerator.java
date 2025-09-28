@@ -1,10 +1,12 @@
 package generators;
 
+import org.springframework.stereotype.Component;
 import repositoryTests.model.User;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
+@Component
 public class UserGenerator {
     public User generateUser() {
         return User.builder()

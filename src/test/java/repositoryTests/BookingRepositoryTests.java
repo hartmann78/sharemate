@@ -51,7 +51,10 @@ public class BookingRepositoryTests {
         bookingRepository.save(booking);
 
         booker.getBookings().add(booking);
+        userRepository.save(booker);
+
         item.getBookings().add(booking);
+        itemRepository.save(item);
 
         Optional<User> checkOwner = userRepository.findById(owner.getId());
         assertTrue(checkOwner.isPresent());
@@ -86,7 +89,10 @@ public class BookingRepositoryTests {
         bookingRepository.save(booking);
 
         booker.getBookings().add(booking);
+        userRepository.save(booker);
+
         item.getBookings().add(booking);
+        itemRepository.save(item);
 
         Optional<User> checkOwner = userRepository.findById(owner.getId());
         assertTrue(checkOwner.isPresent());
@@ -120,7 +126,10 @@ public class BookingRepositoryTests {
         bookingRepository.save(booking);
 
         booker.getBookings().add(booking);
+        userRepository.save(booker);
+
         item.getBookings().add(booking);
+        itemRepository.save(item);
 
         Optional<User> checkOwner = userRepository.findById(owner.getId());
         assertTrue(checkOwner.isPresent());
@@ -157,7 +166,10 @@ public class BookingRepositoryTests {
         bookingRepository.save(booking);
 
         booker.getBookings().add(booking);
+        userRepository.save(booker);
+
         item.getBookings().add(booking);
+        itemRepository.save(item);
 
         Booking approveBooking = bookingRepository.findById(booking.getId()).orElseThrow();
         assertEquals(approveBooking.getItem().getOwnerId(), owner.getId());
