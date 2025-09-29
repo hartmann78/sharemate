@@ -1,10 +1,10 @@
 package generators;
 
+import net.bytebuddy.utility.RandomString;
 import repositoryTests.model.Request;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class RequestGenerator {
     public Request generateRequest(Long requestorId) {
@@ -16,7 +16,7 @@ public class RequestGenerator {
                 .build();
     }
 
-    private String generateDescription() {
-        return UUID.randomUUID().toString();
+    public String generateDescription() {
+        return RandomString.make(32);
     }
 }

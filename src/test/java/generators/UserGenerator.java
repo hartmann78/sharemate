@@ -1,10 +1,10 @@
 package generators;
 
+import net.bytebuddy.utility.RandomString;
 import org.springframework.stereotype.Component;
 import repositoryTests.model.User;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 @Component
 public class UserGenerator {
@@ -17,11 +17,11 @@ public class UserGenerator {
                 .build();
     }
 
-    private String generateName() {
-        return UUID.randomUUID().toString().substring(0, 8);
+    public String generateName() {
+        return RandomString.make(8);
     }
 
-    private String generateEmail() {
-        return UUID.randomUUID().toString().substring(0, 8) + "@mail.com";
+    public String generateEmail() {
+        return RandomString.make(10) + "@mail.com";
     }
 }

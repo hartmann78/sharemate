@@ -1,10 +1,10 @@
 package generators;
 
+import net.bytebuddy.utility.RandomString;
 import repositoryTests.model.Item;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.UUID;
 
 public class ItemGenerator {
     private final Random random = new Random();
@@ -32,11 +32,11 @@ public class ItemGenerator {
                 .build();
     }
 
-    private String generateName() {
-        return UUID.randomUUID().toString().substring(0, 8);
+    public String generateName() {
+        return RandomString.make(8);
     }
 
-    private String generateDescription() {
-        return UUID.randomUUID().toString();
+    public String generateDescription() {
+        return RandomString.make(32);
     }
 }

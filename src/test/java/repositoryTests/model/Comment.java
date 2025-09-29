@@ -1,5 +1,6 @@
 package repositoryTests.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -31,5 +32,16 @@ public class Comment {
     private User author;
 
     @Column(name = "created")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime created;
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", authorName=" + author.getName() +
+                ", created=" + created +
+                '}';
+    }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 public class DateGenerator {
-    private static final Random random = new Random();
+    public static final Random random = new Random();
 
     public LocalDateTime randomDate() {
         int year = randomYear();

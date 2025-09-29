@@ -1,11 +1,8 @@
 package com.practice.sharemate.service.impl;
 
 import com.practice.sharemate.dto.CommentDTO;
-import com.practice.sharemate.exceptions.ForbiddenException;
+import com.practice.sharemate.exceptions.*;
 import com.practice.sharemate.mapper.CommentMapper;
-import com.practice.sharemate.exceptions.BadRequestException;
-import com.practice.sharemate.exceptions.ItemNotFoundException;
-import com.practice.sharemate.exceptions.UserNotFoundException;
 import com.practice.sharemate.model.Booking;
 import com.practice.sharemate.model.Comment;
 import com.practice.sharemate.model.Item;
@@ -47,6 +44,9 @@ public class CommentServiceImpl implements CommentService {
         }
 
         Booking findBooking = bookingRepository.findBookingByBookerIdAndItemId(userId, itemId);
+        if (findBooking == null) {
+            throw new BookingNotFoundException("Нельзя добавить комментарий без бронирования предмета");
+        }
 
         if (!findBooking.getStatus().equals(Booking.BookingStatus.APPROVED)) {
             throw new ForbiddenException("Нельзя добавить комментарий без одобрения бронирования");
@@ -57,17 +57,20 @@ public class CommentServiceImpl implements CommentService {
         }
 
         Item itemToComment = findItem.get();
+        User author = findUser.get();
 
-        comment.setAuthor(findUser.get());
+        comment.setAuthor(author);
         comment.setItem(itemToComment);
         comment.setCreated(LocalDateTime.now());
 
-        Comment newComment = commentRepository.save(comment);
+        commentRepository.save(comment);
 
-        itemToComment.getComments().add(newComment);
+        itemToComment.getComments().add(comment);
+        author.getComments().add(comment);
 
         itemRepository.save(itemToComment);
+        userRepository.save(author);
 
-        return commentMapper.entityToDto(newComment);
+        return commentMapper.entityToDto(comment);
     }
 }
