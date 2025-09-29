@@ -58,7 +58,7 @@ public class ItemRepositoryTests {
         User requestor = userGenerator.generateUser();
         userRepository.save(requestor);
 
-        Request requestOnItem = requestGenerator.generateRequest(requestor.getId());
+        Request requestOnItem = requestGenerator.generateRequest(requestor);
         requestRepository.save(requestOnItem);
 
         User owner = userGenerator.generateUser();
@@ -95,7 +95,7 @@ public class ItemRepositoryTests {
         User requestor = userGenerator.generateUser();
         userRepository.save(requestor);
 
-        Request requestOnItem = requestGenerator.generateRequest(requestor.getId());
+        Request requestOnItem = requestGenerator.generateRequest(requestor);
         requestRepository.save(requestOnItem);
 
         User owner = userGenerator.generateUser();
@@ -121,7 +121,7 @@ public class ItemRepositoryTests {
         User requestor = userGenerator.generateUser();
         userRepository.save(requestor);
 
-        Request requestOnItem = requestGenerator.generateRequest(requestor.getId());
+        Request requestOnItem = requestGenerator.generateRequest(requestor);
         requestRepository.save(requestOnItem);
 
         User owner = userGenerator.generateUser();
@@ -147,7 +147,7 @@ public class ItemRepositoryTests {
         User requestor = userGenerator.generateUser();
         userRepository.save(requestor);
 
-        Request requestOnItem = requestGenerator.generateRequest(requestor.getId());
+        Request requestOnItem = requestGenerator.generateRequest(requestor);
         requestRepository.save(requestOnItem);
 
         User owner = userGenerator.generateUser();
@@ -296,9 +296,6 @@ public class ItemRepositoryTests {
         Optional<Item> checkItem = itemRepository.findById(item.getId());
         assertTrue(checkItem.isPresent());
         assertEquals(item, checkItem.get());
-
-        System.out.println(item);
-        System.out.println(searchItems);
 
         assertTrue(searchItems.contains(item));
     }

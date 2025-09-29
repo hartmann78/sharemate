@@ -20,8 +20,9 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "requestor_id")
-    private Long requestorId;
+    @ManyToOne
+    @JoinColumn(name = "requestor_id", referencedColumnName = "id")
+    private User requestor;
 
     @NotBlank
     @Column(name = "description")

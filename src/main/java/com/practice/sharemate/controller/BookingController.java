@@ -16,8 +16,8 @@ public class BookingController {
     private final BookingService bookingService;
 
     @GetMapping
-    public List<BookingDTO> findAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return bookingService.findAll(userId);
+    public List<BookingDTO> findAllUserBookings(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return bookingService.findAllUserBookings(userId);
     }
 
     @GetMapping("/owner")

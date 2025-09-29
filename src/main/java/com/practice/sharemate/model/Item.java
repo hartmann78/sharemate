@@ -43,6 +43,9 @@ public class Item {
     @OneToMany(mappedBy = "item")
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "item")
+    private List<Answer> answers;
+
     @Override
     public String toString() {
         return "Item{" +

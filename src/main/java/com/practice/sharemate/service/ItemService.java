@@ -6,7 +6,7 @@ import com.practice.sharemate.model.Item;
 import java.util.List;
 
 public interface ItemService {
-    List<ItemDTO> findAll(Long userId);
+    List<ItemDTO> findAllUserItems(Long userId);
 
     List<ItemDTO> getItemByNameOrDescription(String text);
 

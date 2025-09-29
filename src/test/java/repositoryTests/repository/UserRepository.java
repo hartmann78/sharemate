@@ -9,5 +9,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "from users as u " +
             "where u.email = ?1",
             nativeQuery = true)
-    String findUserEmail(String email);
+    String findByUserEmail(String email);
 }

@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Неправильный запрос");
         }
 
-        if (userRepository.findUserEmail(user.getEmail()) != null) {
+        if (userRepository.findUserEmail(user.getEmail()) == true) {
             throw new EmailExistsException("Данный email уже существует!");
         }
 
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Проверка на наличие email в базе данных
-        if (user.getEmail() != null && userRepository.findUserEmail(user.getEmail()) != null) {
+        if (user.getEmail() != null && userRepository.findUserEmail(user.getEmail()) == true) {
             throw new EmailExistsException("Данный email уже существует!");
         }
 

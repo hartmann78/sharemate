@@ -31,7 +31,7 @@ public class RequestRepositoryTests {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
-        Request request = requestGenerator.generateRequest(user.getId());
+        Request request = requestGenerator.generateRequest(user);
         requestRepository.save(request);
 
         Optional<User> checkUser = userRepository.findById(user.getId());
@@ -48,7 +48,7 @@ public class RequestRepositoryTests {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
-        Request request = requestGenerator.generateRequest(user.getId());
+        Request request = requestGenerator.generateRequest(user);
         requestRepository.save(request);
 
         Optional<User> checkUser = userRepository.findById(user.getId());
@@ -64,7 +64,7 @@ public class RequestRepositoryTests {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
-        Request request = requestGenerator.generateRequest(user.getId());
+        Request request = requestGenerator.generateRequest(user);
         requestRepository.save(request);
 
         Optional<User> checkUser = userRepository.findById(user.getId());

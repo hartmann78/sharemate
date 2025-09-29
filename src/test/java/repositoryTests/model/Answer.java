@@ -15,27 +15,22 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "item_id")
-    private Long itemId;
+    @ManyToOne
+    @JoinColumn(name = "item_id", referencedColumnName = "id")
+    private Item item;
 
     @ManyToOne
     @JoinColumn(name = "request_id", referencedColumnName = "id")
     private Request request;
 
-    @Column(name = "description")
-    private String description;
-
-    @Column(name = "is_available")
-    private Boolean available;
-
     @Override
     public String toString() {
         return "Answer{" +
                 "id=" + id +
-                ", itemId=" + itemId +
+                ", itemId=" + item.getId() +
                 ", requestId=" + request.getId() +
-                ", description='" + description + '\'' +
-                ", available=" + available +
+                ", description='" + item.getDescription() + '\'' +
+                ", available=" + item.getAvailable() +
                 '}';
     }
 }

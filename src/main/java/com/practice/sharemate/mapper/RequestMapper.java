@@ -12,7 +12,7 @@ public class RequestMapper {
     public RequestDTO entityToDto(Request request) {
         return RequestDTO.builder()
                 .id(request.getId())
-                .requestorId(request.getRequestorId())
+                .requestorId(request.getRequestor().getId())
                 .description(request.getDescription())
                 .created(request.getCreated())
                 .build();

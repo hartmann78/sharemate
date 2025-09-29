@@ -6,7 +6,7 @@ import com.practice.sharemate.model.BookingRequest;
 import java.util.List;
 
 public interface BookingService {
-    List<BookingDTO> findAll(Long userId);
+    List<BookingDTO> findAllUserBookings(Long userId);
 
     List<BookingDTO> findAllBookingsToOwner(Long userId);
 

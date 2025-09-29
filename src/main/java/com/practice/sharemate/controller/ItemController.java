@@ -16,8 +16,8 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public List<ItemDTO> findAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.findAll(userId);
+    public List<ItemDTO> findAllUserItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemService.findAllUserItems(userId);
     }
 
     @GetMapping("/{itemId}")

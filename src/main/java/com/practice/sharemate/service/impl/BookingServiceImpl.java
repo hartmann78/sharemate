@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,20 +27,14 @@ public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
 
     @Override
-    public List<BookingDTO> findAll(Long userId) {
-        List<Booking> bookings;
-
-        if (userId == null) {
-            bookings = bookingRepository.findAll();
-        } else {
-            bookings = bookingRepository.findAllByBookerId(userId);
-        }
+    public List<BookingDTO> findAllUserBookings(Long userId) {
+        List<Booking> bookings = bookingRepository.findAllByBookerId(userId);
 
         if (bookings.isEmpty()) {
-            return Collections.emptyList();
+            throw new BookingNotFoundException("Бронирования не найдены!");
         }
 
-        return bookingMapper.listToDto(bookings);
+        return bookingMapper.listToDto(bookingRepository.findAllByBookerId(userId));
     }
 
     @Override
@@ -68,7 +61,7 @@ public class BookingServiceImpl implements BookingService {
             throw new ForbiddenException("Доступ воспрещён!");
         }
 
-        return bookingMapper.entityToDto(findBooking.get());
+        return bookingMapper.entityToDto(booking);
     }
 
     @Override

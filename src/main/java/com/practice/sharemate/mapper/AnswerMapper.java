@@ -9,10 +9,10 @@ public class AnswerMapper {
     public AnswerDTO entityToDto(Answer answer) {
         return AnswerDTO.builder()
                 .id(answer.getId())
-                .itemId(answer.getItemId())
+                .itemId(answer.getItem().getId())
                 .requestId(answer.getRequest().getId())
-                .description(answer.getDescription())
-                .available(answer.getAvailable())
+                .description(answer.getItem().getDescription())
+                .available(answer.getItem().getAvailable())
                 .build();
     }
 }

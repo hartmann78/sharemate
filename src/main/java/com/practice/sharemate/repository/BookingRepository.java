@@ -19,10 +19,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "where u.id = ?1")
     List<Booking> findAllByBookerId(Long userId);
 
-    @Query(value = "select b.id, b.start_date, b.end_date, b.booker_id, b.item_id, b.status " +
-            "from bookings as b " +
-            "where b.booker_id = ?1 " +
-            "  and b.item_id = ?2",
-            nativeQuery = true)
+    @Query("select b " +
+            "from Booking b " +
+            "JOIN FETCH b.booker u " +
+            "JOIN FETCH b.item i " +
+            "where u.id = ?1 " +
+            "and i.id = ?2")
     Booking findBookingByBookerIdAndItemId(Long userId, Long itemId);
 }

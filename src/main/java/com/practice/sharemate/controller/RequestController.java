@@ -16,13 +16,13 @@ public class RequestController {
     private final RequestService requestService;
 
     @GetMapping
-    public List<RequestDTO> findAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return requestService.findAll(userId);
+    public List<RequestDTO> findAllUserRequests(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return requestService.findAllUserRequests(userId);
     }
 
     @GetMapping("/all")
     public void findAllPagination(@RequestParam int from, @RequestParam int size) {
-        requestService.findAll(from, size);
+        requestService.findAllPagination(from, size);
     }
 
     @GetMapping("/{requestId}")

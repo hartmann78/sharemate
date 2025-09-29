@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,17 +24,11 @@ public class ItemServiceImpl implements ItemService {
     private final RequestRepository requestRepository;
 
     @Override
-    public List<ItemDTO> findAll(Long userId) {
-        List<Item> items;
-
-        if (userId == null) {
-            items = itemRepository.findAll();
-        } else {
-            items = itemRepository.findAllByOwnerId(userId);
-        }
+    public List<ItemDTO> findAllUserItems(Long userId) {
+        List<Item> items = itemRepository.findAllByOwnerId(userId);
 
         if (items.isEmpty()) {
-            return Collections.emptyList();
+            throw new ItemNotFoundException("Предметы не найдены");
         }
 
         return itemMapper.listToDto(items);
@@ -50,11 +43,11 @@ public class ItemServiceImpl implements ItemService {
     public ItemDTO findItemById(Long id) {
         Optional<Item> item = itemRepository.findById(id);
 
-        if (item.isPresent()) {
-            return itemMapper.entityToDto(item.get());
+        if (item.isEmpty()) {
+            throw new ItemNotFoundException("Предмет с id " + id + " не найден!");
         }
 
-        throw new ItemNotFoundException("Предмет с id " + id + " не найден!");
+        return itemMapper.entityToDto(item.get());
     }
 
     @Override
@@ -100,7 +93,6 @@ public class ItemServiceImpl implements ItemService {
             throw new ForbiddenException("id пользователя не совпадает с id владельца предмета");
         }
 
-        // Обновление данных
         if (item.getName() != null) {
             update.setName(item.getName());
         }

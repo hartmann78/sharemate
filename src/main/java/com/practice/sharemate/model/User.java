@@ -35,6 +35,9 @@ public class User {
     @OneToMany(mappedBy = "author")
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "requestor")
+    private List<Request> requests;
+
     @Override
     public String toString() {
         return "User{" +
