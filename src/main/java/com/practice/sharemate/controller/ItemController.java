@@ -16,8 +16,8 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public List<ItemDTO> findAllUserItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.findAllUserItems(userId);
+    public List<ItemDTO> findAll(@RequestHeader(name = "X-Sharer-User-Id", required = false) Long userId, @RequestParam int from, @RequestParam int size) {
+        return itemService.findAll(userId, from, size);
     }
 
     @GetMapping("/{itemId}")
@@ -26,8 +26,8 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDTO> getItemByNameOrDescription(@RequestParam String text) {
-        return itemService.getItemByNameOrDescription(text);
+    public List<ItemDTO> findItemByNameOrDescription(@RequestParam String text, @RequestParam int from, @RequestParam int size) {
+        return itemService.findItemByNameOrDescription(text, from, size);
     }
 
     @PostMapping

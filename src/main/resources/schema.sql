@@ -1,3 +1,5 @@
+drop table if exists answers;
+
 drop table if exists comments;
 
 drop table if exists bookings;
@@ -18,8 +20,9 @@ create table users
 create table requests
 (
     id           serial unique,
+    requestor_id bigint references users (id),
     description  varchar(512) not null,
-    requestor_id bigint references users (id)
+    created      timestamp with time zone
 );
 
 create table items
@@ -49,4 +52,11 @@ create table comments
     item_id   bigint references items (id),
     author_id bigint references users (id),
     created   timestamp with time zone
+);
+
+create table answers
+(
+    id         serial unique,
+    item_id    bigint references items (id),
+    request_id bigint references requests (id)
 );

@@ -12,6 +12,8 @@ import com.practice.sharemate.repository.ItemRepository;
 import com.practice.sharemate.repository.UserRepository;
 import com.practice.sharemate.service.BookingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,18 +29,29 @@ public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
 
     @Override
-    public List<BookingDTO> findAllUserBookings(Long userId) {
-        List<Booking> bookings = bookingRepository.findAllByBookerId(userId);
+    public List<BookingDTO> findAll(Long userId, int from, int size) {
+        if (from < 0 || size <= 0) {
+            throw new BadRequestException("Неправильный запрос");
+        }
+
+        List<Booking> bookings;
+
+        if (userId == null) {
+            Pageable page = PageRequest.of(from, size);
+            bookings = bookingRepository.findAll(page).getContent();
+        } else {
+            bookings = bookingRepository.findAllByBookerId(userId);
+        }
 
         if (bookings.isEmpty()) {
             throw new BookingNotFoundException("Бронирования не найдены!");
         }
 
-        return bookingMapper.listToDto(bookingRepository.findAllByBookerId(userId));
+        return bookingMapper.listToDto(bookings);
     }
 
     @Override
-    public List<BookingDTO> findAllBookingsToOwner(Long userId) {
+    public List<BookingDTO> findAllBookingsToOwner(Long userId, int from, int size) {
         List<Booking> bookings = bookingRepository.findAllBookingsToOwner(userId);
 
         if (bookings.isEmpty()) {

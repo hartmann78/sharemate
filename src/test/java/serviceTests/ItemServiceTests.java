@@ -4,6 +4,7 @@ import com.practice.sharemate.mapper.ItemMapper;
 import com.practice.sharemate.mapper.UserMapper;
 import com.practice.sharemate.model.Item;
 import com.practice.sharemate.model.User;
+import com.practice.sharemate.repository.AnswerRepository;
 import com.practice.sharemate.repository.ItemRepository;
 import com.practice.sharemate.repository.RequestRepository;
 import com.practice.sharemate.repository.UserRepository;
@@ -29,11 +30,13 @@ public class ItemServiceTests {
     UserRepository mockUserRepository;
     @Mock
     RequestRepository mockRequestRepository;
+    @Mock
+    AnswerRepository mockAnswerRepository;
 
     @Test
     public void createItem() {
         UserServiceImpl userServiceImpl = new UserServiceImpl(mockUserRepository, mockUserMapper);
-        ItemServiceImpl itemServiceImpl = new ItemServiceImpl(mockItemMapper, mockItemRepository, mockUserRepository, mockRequestRepository);
+        ItemServiceImpl itemServiceImpl = new ItemServiceImpl(mockItemMapper, mockItemRepository, mockUserRepository, mockRequestRepository, mockAnswerRepository);
 
         User user1 = User.builder()
                 .name("User 1")
@@ -93,7 +96,7 @@ public class ItemServiceTests {
     @Test
     public void updateItem() {
         UserServiceImpl userServiceImpl = new UserServiceImpl(mockUserRepository, mockUserMapper);
-        ItemServiceImpl itemServiceImpl = new ItemServiceImpl(mockItemMapper, mockItemRepository, mockUserRepository, mockRequestRepository);
+        ItemServiceImpl itemServiceImpl = new ItemServiceImpl(mockItemMapper, mockItemRepository, mockUserRepository, mockRequestRepository, mockAnswerRepository);
 
         User user2 = User.builder()
                 .name("User 2")

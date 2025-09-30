@@ -10,7 +10,7 @@ public class BookingRequestGenerator {
     private final DateGenerator dateGenerator = new DateGenerator();
 
     public BookingRequest generateBookingRequest(Long itemId) {
-        LocalDateTime start = dateGenerator.randomDate();
+        LocalDateTime start = dateGenerator.generateRandomDate();
         LocalDateTime end = start.plusDays(random.nextLong(1, 8));
 
         return BookingRequest.builder()

@@ -3,6 +3,7 @@ package repositoryTests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import generators.DateGenerator;
 import generators.RequestGenerator;
 import generators.UserGenerator;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ public class RequestRepositoryTests {
 
     UserGenerator userGenerator = new UserGenerator();
     RequestGenerator requestGenerator = new RequestGenerator();
+    DateGenerator dateGenerator = new DateGenerator();
 
     @Test
     void createRequest() {
@@ -49,14 +51,22 @@ public class RequestRepositoryTests {
         userRepository.save(user);
 
         Request request = requestGenerator.generateRequest(user);
+        request.setCreated(dateGenerator.generateRandomDate());
         requestRepository.save(request);
+
+        Request request2 = requestGenerator.generateRequest(user);
+        request2.setCreated(dateGenerator.generateRandomDate());
+        requestRepository.save(request2);
 
         Optional<User> checkUser = userRepository.findById(user.getId());
         assertTrue(checkUser.isPresent());
         assertEquals(user, checkUser.get());
 
-        List<Request> userRequests = requestRepository.findAllByRequestorId(user.getId());
+        List<Request> userRequests = requestRepository.findAllByRequestorIdOrderByCreatedDesc(user.getId());
         assertTrue(userRequests.contains(request));
+        assertTrue(userRequests.contains(request2));
+
+        System.out.println(userRequests);
     }
 
     @Test

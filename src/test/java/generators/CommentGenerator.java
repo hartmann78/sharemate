@@ -6,6 +6,7 @@ import repositoryTests.model.Item;
 import repositoryTests.model.User;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class CommentGenerator {
     public Comment generateComment(Item item, User user) {
@@ -13,7 +14,7 @@ public class CommentGenerator {
                 .text(generateText())
                 .item(item)
                 .author(user)
-                .created(LocalDateTime.now())
+                .created(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .build();
     }
 

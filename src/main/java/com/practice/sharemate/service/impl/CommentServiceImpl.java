@@ -52,7 +52,7 @@ public class CommentServiceImpl implements CommentService {
             throw new ForbiddenException("Нельзя добавить комментарий без одобрения бронирования");
         }
 
-        if (LocalDateTime.now().isBefore(findBooking.getEnd())) {
+        if (findBooking.getEnd().isAfter(LocalDateTime.now())) {
             throw new BadRequestException("Нельзя добавить комментарий до завершения бронирования!");
         }
 

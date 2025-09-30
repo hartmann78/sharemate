@@ -5,6 +5,7 @@ import repositoryTests.model.Request;
 import repositoryTests.model.User;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 public class RequestGenerator {
@@ -12,7 +13,7 @@ public class RequestGenerator {
         return Request.builder()
                 .requestor(requestor)
                 .description(generateDescription())
-                .created(LocalDateTime.now())
+                .created(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .answers(new ArrayList<>())
                 .build();
     }

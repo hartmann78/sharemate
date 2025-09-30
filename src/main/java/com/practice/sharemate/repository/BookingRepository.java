@@ -19,6 +19,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "where u.id = ?1")
     List<Booking> findAllByBookerId(Long userId);
 
+//    @Query("select b " +
+//            "from Booking b " +
+//            "JOIN FETCH b.booker u " +
+//            "where u.id = ?1 " +
+//            "limit ?3 " +
+//            "offset ?2")
+//    List<Booking> findAllByBookerIdPagination(Long userId, int from, int size);
+
     @Query("select b " +
             "from Booking b " +
             "JOIN FETCH b.booker u " +

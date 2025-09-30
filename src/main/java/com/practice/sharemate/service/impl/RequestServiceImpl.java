@@ -1,10 +1,7 @@
 package com.practice.sharemate.service.impl;
 
 import com.practice.sharemate.dto.RequestDTO;
-import com.practice.sharemate.exceptions.ForbiddenException;
-import com.practice.sharemate.exceptions.ItemNotFoundException;
-import com.practice.sharemate.exceptions.RequestNotFoundException;
-import com.practice.sharemate.exceptions.UserNotFoundException;
+import com.practice.sharemate.exceptions.*;
 import com.practice.sharemate.mapper.RequestMapper;
 import com.practice.sharemate.model.Request;
 import com.practice.sharemate.model.User;
@@ -12,7 +9,6 @@ import com.practice.sharemate.repository.RequestRepository;
 import com.practice.sharemate.repository.UserRepository;
 import com.practice.sharemate.service.RequestService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,8 +27,15 @@ public class RequestServiceImpl implements RequestService {
     private final UserRepository userRepository;
 
     @Override
-    public List<RequestDTO> findAllUserRequests(Long userId) {
-        List<Request> requests = requestRepository.findAllByRequestorId(userId);
+    public List<RequestDTO> findAll(Long userId) {
+        List<Request> requests;
+
+        if (userId == null) {
+            Sort sortByDate = Sort.by(Sort.Direction.DESC, "created");
+            requests = requestRepository.findAll(sortByDate);
+        } else {
+            requests = requestRepository.findAllByRequestorIdOrderByCreatedDesc(userId);
+        }
 
         if (requests.isEmpty()) {
             throw new RequestNotFoundException("Запросы не найдены");
@@ -42,25 +45,25 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void findAllPagination(int from, int size) {
+    public List<RequestDTO> findAllPagination(int from, int size) {
+        if (from < 0 || size <= 0) {
+            throw new BadRequestException("Неправильный запрос");
+        }
+
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "created");
         Pageable page = PageRequest.of(from, size, sortByDate);
-        do {
-            Page<Request> requestPage = requestRepository.findAll(page);
+        List<Request> requests = requestRepository.findAll(page).getContent();
 
-            requestPage.getContent().forEach(System.out::println);
+        if (requests.isEmpty()) {
+            throw new RequestNotFoundException("Запросы не найдены");
+        }
 
-            if (requestPage.hasNext()) {
-                page = PageRequest.of(requestPage.getNumber() + 1, requestPage.getSize(), requestPage.getSort());
-            } else {
-                page = null;
-            }
-        } while (page != null);
+        return requestMapper.listToDto(requests);
     }
 
     @Override
     public RequestDTO findUserRequestById(Long userId, Long requestId) {
-        if (userRepository.findById(userId).isEmpty()) {
+        if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException("Пользователь с id" + userId + " не найден!");
         }
 
@@ -70,7 +73,7 @@ public class RequestServiceImpl implements RequestService {
         }
 
         if (!request.get().getRequestor().getId().equals(userId)) {
-            throw new ForbiddenException("id пользователя");
+            throw new ForbiddenException("id пользователя не совпадает с id автора запроса");
         }
 
         return requestMapper.entityToDto(request.get());

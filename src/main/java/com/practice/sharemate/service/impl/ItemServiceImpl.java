@@ -3,15 +3,21 @@ package com.practice.sharemate.service.impl;
 import com.practice.sharemate.dto.ItemDTO;
 import com.practice.sharemate.exceptions.*;
 import com.practice.sharemate.mapper.ItemMapper;
+import com.practice.sharemate.model.Answer;
+import com.practice.sharemate.model.Request;
+import com.practice.sharemate.repository.AnswerRepository;
 import com.practice.sharemate.repository.ItemRepository;
 import com.practice.sharemate.model.Item;
 import com.practice.sharemate.repository.RequestRepository;
 import com.practice.sharemate.service.ItemService;
 import com.practice.sharemate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,10 +28,22 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final RequestRepository requestRepository;
+    private final AnswerRepository answerRepository;
 
     @Override
-    public List<ItemDTO> findAllUserItems(Long userId) {
-        List<Item> items = itemRepository.findAllByOwnerId(userId);
+    public List<ItemDTO> findAll(Long userId, int from, int size) {
+        if (from < 0 || size <= 0) {
+            throw new BadRequestException("Неправильный запрос");
+        }
+
+        List<Item> items;
+
+        if (userId == null) {
+            Pageable page = PageRequest.of(from, size);
+            items = itemRepository.findAll(page).getContent();
+        } else {
+            items = itemRepository.findAllByOwnerIdPagination(userId, from, size);
+        }
 
         if (items.isEmpty()) {
             throw new ItemNotFoundException("Предметы не найдены");
@@ -34,17 +52,26 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.listToDto(items);
     }
 
+    // не доконца уверен
     @Override
-    public List<ItemDTO> getItemByNameOrDescription(String text) {
-        return itemMapper.listToDto(itemRepository.findAllByNameIgnoreCaseAndAvailableTrueOrDescriptionIgnoreCaseAndAvailableTrue(text, text));
+    public List<ItemDTO> findItemByNameOrDescription(String text, int from, int size) {
+        if (text.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        if (from < 0 || size <= 0) {
+            throw new BadRequestException("Неправильный запрос");
+        }
+
+        return itemMapper.listToDto(itemRepository.searchPagination(text, from, size));
     }
 
     @Override
-    public ItemDTO findItemById(Long id) {
-        Optional<Item> item = itemRepository.findById(id);
+    public ItemDTO findItemById(Long itemId) {
+        Optional<Item> item = itemRepository.findById(itemId);
 
         if (item.isEmpty()) {
-            throw new ItemNotFoundException("Предмет с id " + id + " не найден!");
+            throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
         }
 
         return itemMapper.entityToDto(item.get());
@@ -56,19 +83,25 @@ public class ItemServiceImpl implements ItemService {
             throw new BadRequestException("Неверный запрос");
         }
 
-        if (userRepository.findById(userId).isEmpty()) {
+        if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
-        }
-
-        if (item.getRequestId() != null && requestRepository.findById(item.getRequestId()).isEmpty()) {
-            throw new RequestNotFoundException("Запрос с id " + item.getRequestId() + " не найден!");
         }
 
         item.setOwnerId(userId);
         item.setComments(new ArrayList<>());
         item.setBookings(new ArrayList<>());
+        itemRepository.save(item);
 
-        return itemMapper.entityToDto(itemRepository.save(item));
+        if (item.getRequestId() != null) {
+            Optional<Request> findRequest = requestRepository.findById(item.getRequestId());
+            if (findRequest.isEmpty()) {
+                throw new RequestNotFoundException("Запрос с id " + item.getRequestId() + " не найден!");
+            } else {
+                answerRepository.save(new Answer(null, item, findRequest.get()));
+            }
+        }
+
+        return itemMapper.entityToDto(item);
     }
 
     @Override
@@ -77,7 +110,7 @@ public class ItemServiceImpl implements ItemService {
             throw new BadRequestException("Неверный запрос");
         }
 
-        if (userRepository.findById(userId).isEmpty()) {
+        if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
 

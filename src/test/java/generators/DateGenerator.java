@@ -7,7 +7,7 @@ import java.util.Random;
 public class DateGenerator {
     public static final Random random = new Random();
 
-    public LocalDateTime randomDate() {
+    public LocalDateTime generateRandomDate() {
         int year = randomYear();
         int month = randomMonth();
         int day = randomDay(year, month);

@@ -12,5 +12,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "from users as u " +
             "where u.email = ?1)",
             nativeQuery = true)
-    Boolean findUserEmail(String email);
+    Boolean checkUserEmail(String email);
 }

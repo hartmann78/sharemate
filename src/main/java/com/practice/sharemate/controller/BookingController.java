@@ -16,13 +16,13 @@ public class BookingController {
     private final BookingService bookingService;
 
     @GetMapping
-    public List<BookingDTO> findAllUserBookings(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return bookingService.findAllUserBookings(userId);
+    public List<BookingDTO> findAll(@RequestHeader(name = "X-Sharer-User-Id", required = false) Long userId, @RequestParam int from, @RequestParam int size) {
+        return bookingService.findAll(userId, from, size);
     }
 
     @GetMapping("/owner")
-    public List<BookingDTO> findAllBookingsToOwner(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return bookingService.findAllBookingsToOwner(userId);
+    public List<BookingDTO> findAllBookingsToOwner(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestParam int from, @RequestParam int size) {
+        return bookingService.findAllBookingsToOwner(userId, from, size);
     }
 
     @GetMapping("/{bookingId}")
