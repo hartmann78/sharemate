@@ -19,7 +19,7 @@ create table users
 
 create table requests
 (
-    id           serial unique,
+    id           serial primary key unique,
     requestor_id bigint references users (id),
     description  varchar(512) not null,
     created      timestamp with time zone
@@ -31,7 +31,7 @@ create table items
     name         varchar(255)                    not null,
     description  varchar(512)                    not null,
     is_available boolean                         not null,
-    owner_id     bigint references users (id)    null,
+    owner_id     bigint references users (id)    not null,
     request_id   bigint references requests (id) null
 );
 

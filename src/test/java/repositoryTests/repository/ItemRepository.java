@@ -25,10 +25,11 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query(value = "select id, is_available, description, name, owner_id, request_id " +
             "from items " +
-            "limit ?2 " +
-            "offset ?1",
+            "where owner_id = ?1 " +
+            "limit ?3 " +
+            "offset ?2",
             nativeQuery = true)
-    List<Item> find(int from, int size);
+    List<Item> findAllByOwnerIdPagination(Long userId, int from, int size);
 
     List<Item> findAllByOwnerId(Long userId);
 

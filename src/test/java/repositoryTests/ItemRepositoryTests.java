@@ -297,6 +297,7 @@ public class ItemRepositoryTests {
         assertTrue(searchItems.contains(item));
     }
 
+    // выдаёт разные результаты при одних и тех же данных
     @Test
     void testPagination() {
         User user = userGenerator.generateUser();
@@ -346,9 +347,7 @@ public class ItemRepositoryTests {
         assertTrue(checkItem5.isPresent());
         assertEquals(item5, checkItem5.get());
 
-        List<Item> items = itemRepository.find(0, 5);
-
-        System.out.println("\n");
-        System.out.println(items.size());
+        List<Item> items = itemRepository.searchPagination("axe", 1, 3);
+        assertEquals(3, items.size());
     }
 }

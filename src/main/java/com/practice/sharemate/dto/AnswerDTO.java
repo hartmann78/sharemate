@@ -8,7 +8,8 @@ import lombok.Data;
 public class AnswerDTO {
     private Long id;
     private Long itemId;
-    private Long requestId;
+    private String name;
     private String description;
+    private Long requestId;
     private Boolean available;
 }

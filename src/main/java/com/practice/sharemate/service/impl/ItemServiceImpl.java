@@ -13,7 +13,6 @@ import com.practice.sharemate.service.ItemService;
 import com.practice.sharemate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,8 +38,7 @@ public class ItemServiceImpl implements ItemService {
         List<Item> items;
 
         if (userId == null) {
-            Pageable page = PageRequest.of(from, size);
-            items = itemRepository.findAll(page).getContent();
+            items = itemRepository.findAll(PageRequest.of(from, size)).getContent();
         } else {
             items = itemRepository.findAllByOwnerIdPagination(userId, from, size);
         }
@@ -88,18 +86,23 @@ public class ItemServiceImpl implements ItemService {
         }
 
         item.setOwnerId(userId);
-        item.setComments(new ArrayList<>());
         item.setBookings(new ArrayList<>());
-        itemRepository.save(item);
+        item.setComments(new ArrayList<>());
+        item.setAnswers(new ArrayList<>());
 
         if (item.getRequestId() != null) {
             Optional<Request> findRequest = requestRepository.findById(item.getRequestId());
             if (findRequest.isEmpty()) {
                 throw new RequestNotFoundException("Запрос с id " + item.getRequestId() + " не найден!");
             } else {
-                answerRepository.save(new Answer(null, item, findRequest.get()));
+                Answer answer = new Answer(null, item, findRequest.get());
+                answerRepository.save(answer);
+
+                item.getAnswers().add(answer);
             }
         }
+
+        itemRepository.save(item);
 
         return itemMapper.entityToDto(item);
     }

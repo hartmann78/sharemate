@@ -13,7 +13,6 @@ import com.practice.sharemate.repository.UserRepository;
 import com.practice.sharemate.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,10 +36,9 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings;
 
         if (userId == null) {
-            Pageable page = PageRequest.of(from, size);
-            bookings = bookingRepository.findAll(page).getContent();
+            bookings = bookingRepository.findAll(PageRequest.of(from, size)).getContent();
         } else {
-            bookings = bookingRepository.findAllByBookerId(userId);
+            bookings = bookingRepository.findAllByBookerIdPagination(userId, from, size);
         }
 
         if (bookings.isEmpty()) {
@@ -52,7 +50,11 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDTO> findAllBookingsToOwner(Long userId, int from, int size) {
-        List<Booking> bookings = bookingRepository.findAllBookingsToOwner(userId);
+        if (from < 0 || size <= 0) {
+            throw new BadRequestException("Неправильный запрос");
+        }
+
+        List<Booking> bookings = bookingRepository.findAllBookingsToOwnerPagination(userId, from, size);
 
         if (bookings.isEmpty()) {
             throw new BookingNotFoundException("Бронирования не найдены!");
@@ -89,10 +91,6 @@ public class BookingServiceImpl implements BookingService {
 
         if (bookingRequest.getEnd().isBefore(bookingRequest.getStart())) {
             throw new BadRequestException("Дата и время конца бронирования не должно быть раньше начала!");
-        }
-
-        if (bookingRequest.getStart().isAfter(bookingRequest.getEnd())) {
-            throw new BadRequestException("Дата и время начала бронирования не должно быть позже конца!");
         }
 
         if (bookingRequest.getStart().equals(bookingRequest.getEnd())) {

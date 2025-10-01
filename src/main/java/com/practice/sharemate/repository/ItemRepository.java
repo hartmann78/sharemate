@@ -1,7 +1,6 @@
 package com.practice.sharemate.repository;
 
 import com.practice.sharemate.model.Item;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
