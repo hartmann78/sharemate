@@ -1,7 +1,7 @@
 package generators;
 
+import com.practice.sharemate.model.Item;
 import net.bytebuddy.utility.RandomString;
-import repositoryTests.model.Item;
 
 import java.util.ArrayList;
 import java.util.Random;

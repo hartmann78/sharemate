@@ -1,8 +1,8 @@
 package generators;
 
-import repositoryTests.model.Answer;
-import repositoryTests.model.Item;
-import repositoryTests.model.Request;
+import com.practice.sharemate.model.Answer;
+import com.practice.sharemate.model.Item;
+import com.practice.sharemate.model.Request;
 
 public class AnswerGenerator {
     public Answer generateAnswer(Item item, Request request) {

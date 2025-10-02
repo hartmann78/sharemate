@@ -3,16 +3,16 @@ package repositoryTests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.practice.sharemate.model.Request;
+import com.practice.sharemate.model.User;
+import com.practice.sharemate.repository.RequestRepository;
+import com.practice.sharemate.repository.UserRepository;
 import generators.DateGenerator;
 import generators.RequestGenerator;
 import generators.UserGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import repositoryTests.model.Request;
-import repositoryTests.model.User;
-import repositoryTests.repository.RequestRepository;
-import repositoryTests.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,13 +1,15 @@
 package repositoryTests;
 
 import com.practice.sharemate.exceptions.BadRequestException;
+import com.practice.sharemate.model.*;
+import com.practice.sharemate.repository.*;
 import generators.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import repositoryTests.model.*;
-import repositoryTests.repository.*;
 
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -271,8 +273,10 @@ public class ItemRepositoryTests {
         assertTrue(checkUser.isPresent());
         assertEquals(user, checkUser.get());
 
-        Item checkItem = itemRepository.findByIdAndOwnerId(item.getId(), user.getId());
-        assertEquals(item, checkItem);
+        Optional<Item> checkItem = itemRepository.findById(item.getId());
+        assertTrue(checkItem.isPresent());
+        assertEquals(user.getId(), checkItem.get().getOwnerId());
+        assertEquals(item, checkItem.get());
     }
 
     @Test
@@ -349,5 +353,30 @@ public class ItemRepositoryTests {
 
         List<Item> items = itemRepository.searchPagination("axe", 1, 3);
         assertEquals(3, items.size());
+    }
+
+    @Test
+    void findAllByOwnerIdPagination() {
+        User user = userGenerator.generateUser();
+        userRepository.save(user);
+
+        Item item1 = itemGenerator.generateItem(user.getId());
+        itemRepository.save(item1);
+
+        Item item2 = itemGenerator.generateItem(user.getId());
+        itemRepository.save(item2);
+
+        Item item3 = itemGenerator.generateItem(user.getId());
+        itemRepository.save(item3);
+
+        Item item4 = itemGenerator.generateItem(user.getId());
+        itemRepository.save(item4);
+
+        Item item5 = itemGenerator.generateItem(user.getId());
+        itemRepository.save(item5);
+
+        List<Item> items = itemRepository.findAllByOwnerIdPagination(user.getId(), 1, 3);
+        assertEquals(3, items.size());
+        assertTrue(items.containsAll(new ArrayList<>(List.of(item2, item3, item4))));
     }
 }

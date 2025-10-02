@@ -1,9 +1,9 @@
 package generators;
 
-import repositoryTests.model.Booking;
-import repositoryTests.model.BookingRequest;
-import repositoryTests.model.Item;
-import repositoryTests.model.User;
+import com.practice.sharemate.model.Booking;
+import com.practice.sharemate.model.BookingRequest;
+import com.practice.sharemate.model.Item;
+import com.practice.sharemate.model.User;
 
 public class BookingGenerator {
     public Booking generateBooking(BookingRequest bookingRequest, User booker, Item item) {

@@ -14,8 +14,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             nativeQuery = true)
     List<Item> search(String text);
 
-    List<Item> findAllByOwnerId(Long userId);
-
     @Query(value = "select id, is_available, description, name, owner_id, request_id " +
             "from items " +
             "where upper(name) like upper('%' || ?1 || '%') and is_available " +
@@ -24,6 +22,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "offset ?2",
             nativeQuery = true)
     List<Item> searchPagination(String text, int from, int size);
+
+    List<Item> findAllByOwnerId(Long userId);
 
     @Query(value = "select id, is_available, description, name, owner_id, request_id " +
             "from items " +

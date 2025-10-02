@@ -1,6 +1,6 @@
 package generators;
 
-import repositoryTests.model.BookingRequest;
+import com.practice.sharemate.model.BookingRequest;
 
 import java.time.LocalDateTime;
 import java.util.Random;

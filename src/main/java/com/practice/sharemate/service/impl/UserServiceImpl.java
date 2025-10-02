@@ -58,36 +58,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(Long userId, User user) {
-        // Проверка на null
         if (userId == null || user == null) {
             throw new BadRequestException("Неправильный запрос");
         }
 
-        // Проверка на наличие email в базе данных
-        if (user.getEmail() != null && userRepository.checkUserEmail(user.getEmail()) == true) {
-            throw new EmailExistsException("Данный email уже существует!");
-        }
-
-        // Проверки на наличие пользователей в базе данных по id
         Optional<User> findUser = userRepository.findById(userId);
         if (findUser.isEmpty()) {
             throw new UserNotFoundException("Пользователь с id" + userId + " не найден!");
         }
 
+        if (user.getEmail() != null && userRepository.checkUserEmail(user.getEmail()) == true && !user.getEmail().equals(findUser.get().getEmail())) {
+            throw new EmailExistsException("Данный email уже занят!");
+        }
+
         User updateUser = findUser.get();
 
-        // Обновление данных
-        if (user.getName() != null) {
+        if (user.getName() != null && !user.getName().equals(updateUser.getName())) {
             updateUser.setName(user.getName());
         }
 
-        if (user.getEmail() != null) {
+        if (user.getEmail() != null && !user.getEmail().equals(updateUser.getEmail())) {
             updateUser.setEmail(user.getEmail());
         }
 
         return userMapper.entityToDto(userRepository.save(updateUser));
     }
-
 
     @Override
     public void deleteUser(Long userId) {

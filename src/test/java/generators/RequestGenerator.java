@@ -1,8 +1,8 @@
 package generators;
 
+import com.practice.sharemate.model.Request;
+import com.practice.sharemate.model.User;
 import net.bytebuddy.utility.RandomString;
-import repositoryTests.model.Request;
-import repositoryTests.model.User;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

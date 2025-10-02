@@ -1,8 +1,8 @@
 package generators;
 
+import com.practice.sharemate.model.User;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.stereotype.Component;
-import repositoryTests.model.User;
 
 import java.util.ArrayList;
 
