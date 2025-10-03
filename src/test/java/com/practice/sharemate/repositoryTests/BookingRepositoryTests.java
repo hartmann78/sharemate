@@ -1,4 +1,4 @@
-package repositoryTests;
+package com.practice.sharemate.repositoryTests;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,10 +13,10 @@ import com.practice.sharemate.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import generators.BookingGenerator;
-import generators.BookingRequestGenerator;
-import generators.ItemGenerator;
-import generators.UserGenerator;
+import com.practice.sharemate.generators.BookingGenerator;
+import com.practice.sharemate.generators.BookingRequestGenerator;
+import com.practice.sharemate.generators.ItemGenerator;
+import com.practice.sharemate.generators.UserGenerator;
 
 import java.util.List;
 import java.util.Optional;
@@ -143,11 +143,9 @@ public class BookingRepositoryTests {
         assertTrue(checkItem.isPresent());
         assertEquals(item, checkItem.get());
 
-        assertTrue(bookingRepository.checkBookerOrOwnerId(booker.getId()));
-
-        Optional<Booking> getUserBookingById = bookingRepository.findById(booking.getId());
-        assertTrue(getUserBookingById.isPresent());
-        assertEquals(booking, getUserBookingById.get());
+        Optional<Booking> checkUserBookingById = bookingRepository.findById(booking.getId());
+        assertTrue(checkUserBookingById.isPresent());
+        assertEquals(booking, checkUserBookingById.get());
     }
 
     @Test

@@ -1,4 +1,4 @@
-package repositoryTests;
+package com.practice.sharemate.repositoryTests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,9 +7,9 @@ import com.practice.sharemate.model.Request;
 import com.practice.sharemate.model.User;
 import com.practice.sharemate.repository.RequestRepository;
 import com.practice.sharemate.repository.UserRepository;
-import generators.DateGenerator;
-import generators.RequestGenerator;
-import generators.UserGenerator;
+import com.practice.sharemate.generators.DateGenerator;
+import com.practice.sharemate.generators.RequestGenerator;
+import com.practice.sharemate.generators.UserGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -71,17 +71,19 @@ public class RequestRepositoryTests {
 
     @Test
     void getUserRequestById() {
-        User user = userGenerator.generateUser();
-        userRepository.save(user);
+        User requestor = userGenerator.generateUser();
+        userRepository.save(requestor);
 
-        Request request = requestGenerator.generateRequest(user);
+        Request request = requestGenerator.generateRequest(requestor);
         requestRepository.save(request);
 
-        Optional<User> checkUser = userRepository.findById(user.getId());
+        Optional<User> checkUser = userRepository.findById(requestor.getId());
         assertTrue(checkUser.isPresent());
-        assertEquals(user, checkUser.get());
+        assertEquals(requestor, checkUser.get());
 
-        Request checkRequest = requestRepository.findByIdAndRequestorId(request.getId(), user.getId());
-        assertEquals(request, checkRequest);
+        Optional<Request> checkRequest = requestRepository.findById(request.getId());
+        assertTrue(checkRequest.isPresent());
+        assertEquals(requestor, checkRequest.get().getRequestor());
+        assertEquals(request, checkRequest.get());
     }
 }

@@ -1,4 +1,4 @@
-package generators;
+package com.practice.sharemate.generators;
 
 import java.time.LocalDateTime;
 import java.util.List;

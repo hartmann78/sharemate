@@ -50,7 +50,6 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.listToDto(items);
     }
 
-    // не доконца уверен
     @Override
     public List<ItemDTO> findItemByNameOrDescription(String text, int from, int size) {
         if (text.isBlank()) {

@@ -1,4 +1,4 @@
-package generators;
+package com.practice.sharemate.generators;
 
 import com.practice.sharemate.model.Answer;
 import com.practice.sharemate.model.Item;

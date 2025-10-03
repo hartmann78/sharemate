@@ -1,4 +1,4 @@
-package generators;
+package com.practice.sharemate.generators;
 
 import com.practice.sharemate.model.User;
 import net.bytebuddy.utility.RandomString;

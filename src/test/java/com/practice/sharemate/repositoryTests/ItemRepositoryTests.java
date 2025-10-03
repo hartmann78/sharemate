@@ -1,19 +1,17 @@
-package repositoryTests;
+package com.practice.sharemate.repositoryTests;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.practice.sharemate.exceptions.BadRequestException;
+import com.practice.sharemate.generators.*;
 import com.practice.sharemate.model.*;
 import com.practice.sharemate.repository.*;
-import generators.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 public class ItemRepositoryTests {
@@ -297,34 +295,37 @@ public class ItemRepositoryTests {
         Optional<Item> checkItem = itemRepository.findById(item.getId());
         assertTrue(checkItem.isPresent());
         assertEquals(item, checkItem.get());
-
         assertTrue(searchItems.contains(item));
     }
 
-    // выдаёт разные результаты при одних и тех же данных
     @Test
     void testPagination() {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
         Item item1 = itemGenerator.generateItem(user.getId());
-        item1.setName("axe");
+        item1.setName("item1");
+        item1.setAvailable(true);
         itemRepository.save(item1);
 
         Item item2 = itemGenerator.generateItem(user.getId());
-        item2.setName("axe");
+        item2.setName("item2");
+        item2.setAvailable(true);
         itemRepository.save(item2);
 
         Item item3 = itemGenerator.generateItem(user.getId());
-        item3.setName("axe");
+        item3.setName("item3");
+        item3.setAvailable(true);
         itemRepository.save(item3);
 
         Item item4 = itemGenerator.generateItem(user.getId());
-        item4.setName("axe");
+        item4.setName("item4");
+        item4.setAvailable(true);
         itemRepository.save(item4);
 
         Item item5 = itemGenerator.generateItem(user.getId());
-        item5.setName("axe");
+        item5.setName("item5");
+        item5.setAvailable(true);
         itemRepository.save(item5);
 
         Optional<User> checkUser = userRepository.findById(user.getId());
@@ -351,8 +352,9 @@ public class ItemRepositoryTests {
         assertTrue(checkItem5.isPresent());
         assertEquals(item5, checkItem5.get());
 
-        List<Item> items = itemRepository.searchPagination("axe", 1, 3);
+        List<Item> items = itemRepository.searchPagination("item", 1, 3);
         assertEquals(3, items.size());
+        assertTrue(items.containsAll(List.of(item2, item3, item4)));
     }
 
     @Test
@@ -377,6 +379,6 @@ public class ItemRepositoryTests {
 
         List<Item> items = itemRepository.findAllByOwnerIdPagination(user.getId(), 1, 3);
         assertEquals(3, items.size());
-        assertTrue(items.containsAll(new ArrayList<>(List.of(item2, item3, item4))));
+        assertTrue(items.containsAll(List.of(item2, item3, item4)));
     }
 }

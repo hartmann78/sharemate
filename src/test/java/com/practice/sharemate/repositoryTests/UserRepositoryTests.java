@@ -1,11 +1,11 @@
-package repositoryTests;
+package com.practice.sharemate.repositoryTests;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.practice.sharemate.model.User;
 import com.practice.sharemate.repository.UserRepository;
-import generators.UserGenerator;
+import com.practice.sharemate.generators.UserGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

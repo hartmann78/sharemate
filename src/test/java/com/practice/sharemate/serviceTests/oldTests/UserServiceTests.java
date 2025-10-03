@@ -1,4 +1,4 @@
-package serviceTests;
+package com.practice.sharemate.serviceTests.oldTests;
 
 import com.practice.sharemate.dto.UserDTO;
 import com.practice.sharemate.mapper.UserMapper;
