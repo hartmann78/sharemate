@@ -16,18 +16,22 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping
-    public List<ItemDTO> findAll(@RequestHeader(name = "X-Sharer-User-Id", required = false) Long userId, @RequestParam int from, @RequestParam int size) {
+    public List<ItemDTO> findAll(@RequestHeader(name = "X-Sharer-User-Id", required = false) Long userId,
+                                 @RequestParam(required = false) int from,
+                                 @RequestParam(required = false) int size) {
         return itemService.findAll(userId, from, size);
+    }
+
+    @GetMapping("/search")
+    public List<ItemDTO> findItemByNameOrDescription(@RequestParam String text,
+                                                     @RequestParam int from,
+                                                     @RequestParam int size) {
+        return itemService.findItemByNameOrDescription(text, from, size);
     }
 
     @GetMapping("/{itemId}")
     public ItemDTO findItemById(@PathVariable Long itemId) {
         return itemService.findItemById(itemId);
-    }
-
-    @GetMapping("/search")
-    public List<ItemDTO> findItemByNameOrDescription(@RequestParam String text, @RequestParam int from, @RequestParam int size) {
-        return itemService.findItemByNameOrDescription(text, from, size);
     }
 
     @PostMapping
@@ -41,8 +45,8 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public void deleteItem(@PathVariable Long itemId) {
-        itemService.deleteItem(itemId);
+    public void deleteItem(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long itemId) {
+        itemService.deleteItem(userId, itemId);
     }
 }
 

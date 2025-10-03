@@ -34,4 +34,9 @@ public class RequestController {
     public RequestDTO addRequest(@RequestHeader("X-Sharer-User-Id") Long userId, @Valid @RequestBody Request request) {
         return requestService.addRequest(userId, request);
     }
+
+    @DeleteMapping
+    public void deleteRequest(@RequestHeader("X-Sharer-User-Id") Long userId, Long requestId) {
+        requestService.deleteRequest(userId, requestId);
+    }
 }

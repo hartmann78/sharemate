@@ -32,7 +32,7 @@ public class User {
     @OneToMany(mappedBy = "booker")
     private List<Booking> bookings;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "requestor")

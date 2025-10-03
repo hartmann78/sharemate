@@ -6,7 +6,7 @@ import com.practice.sharemate.model.User;
 import java.util.List;
 
 public interface UserService {
-    List<UserDTO> findAllUsers();
+    List<UserDTO> findAll();
 
     UserDTO findUserById(Long id);
 

@@ -41,7 +41,7 @@ public class ItemRepositoryTests {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
-        Item item = itemGenerator.generateItem(user.getId());
+        Item item = itemGenerator.generateItemWithOwnerId(user.getId());
         itemRepository.save(item);
 
         Optional<User> checkUser = userRepository.findById(user.getId());
@@ -64,7 +64,7 @@ public class ItemRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item itemOnRequest = itemGenerator.generateItem(owner.getId(), requestOnItem.getId());
+        Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner.getId(), requestOnItem.getId());
         itemRepository.save(itemOnRequest);
 
         Answer answer = answerGenerator.generateAnswer(itemOnRequest, requestOnItem);
@@ -101,7 +101,7 @@ public class ItemRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item itemOnRequest = itemGenerator.generateItem(owner.getId(), requestOnItem.getId());
+        Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner.getId(), requestOnItem.getId());
         itemOnRequest.setName(null);
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
@@ -127,7 +127,7 @@ public class ItemRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item itemOnRequest = itemGenerator.generateItem(owner.getId(), requestOnItem.getId());
+        Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner.getId(), requestOnItem.getId());
         itemOnRequest.setDescription(null);
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
@@ -153,7 +153,7 @@ public class ItemRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item itemOnRequest = itemGenerator.generateItem(owner.getId(), requestOnItem.getId());
+        Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner.getId(), requestOnItem.getId());
         itemOnRequest.setAvailable(null);
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
@@ -176,8 +176,7 @@ public class ItemRepositoryTests {
         User booker = userGenerator.generateUser();
         userRepository.save(booker);
 
-        Item item = itemGenerator.generateItem(owner.getId());
-        item.setAvailable(true);
+        Item item = itemGenerator.generateAvailableItemWithOwnerId(owner.getId());
         itemRepository.save(item);
 
         BookingRequest bookingRequest = bookingRequestGenerator.generateBookingRequest(item.getId());
@@ -188,7 +187,9 @@ public class ItemRepositoryTests {
         booker.getBookings().add(booking);
         item.getBookings().add(booking);
 
-        Comment comment = commentGenerator.generateComment(item, booker);
+        Comment comment = commentGenerator.generateComment();
+        comment.setItem(item);
+        comment.setAuthor(booker);
         commentRepository.save(comment);
 
         item.getComments().add(comment);
@@ -220,7 +221,7 @@ public class ItemRepositoryTests {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
-        Item item = itemGenerator.generateItem(user.getId());
+        Item item = itemGenerator.generateItemWithOwnerId(user.getId());
         itemRepository.save(item);
 
         item.setName(itemGenerator.generateName());
@@ -243,7 +244,7 @@ public class ItemRepositoryTests {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
-        Item item = itemGenerator.generateItem(user.getId());
+        Item item = itemGenerator.generateItemWithOwnerId(user.getId());
         itemRepository.save(item);
 
         List<Item> allUserItems = itemRepository.findAllByOwnerId(user.getId());
@@ -264,7 +265,7 @@ public class ItemRepositoryTests {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
-        Item item = itemGenerator.generateItem(user.getId());
+        Item item = itemGenerator.generateItemWithOwnerId(user.getId());
         itemRepository.save(item);
 
         Optional<User> checkUser = userRepository.findById(user.getId());
@@ -282,8 +283,7 @@ public class ItemRepositoryTests {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
-        Item item = itemGenerator.generateItem(user.getId());
-        item.setAvailable(true);
+        Item item = itemGenerator.generateAvailableItemWithOwnerId(user.getId());
         itemRepository.save(item);
 
         List<Item> searchItems = itemRepository.search(item.getName());
@@ -303,29 +303,24 @@ public class ItemRepositoryTests {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
-        Item item1 = itemGenerator.generateItem(user.getId());
+        Item item1 = itemGenerator.generateAvailableItemWithOwnerId(user.getId());
         item1.setName("item1");
-        item1.setAvailable(true);
         itemRepository.save(item1);
 
-        Item item2 = itemGenerator.generateItem(user.getId());
+        Item item2 = itemGenerator.generateAvailableItemWithOwnerId(user.getId());
         item2.setName("item2");
-        item2.setAvailable(true);
         itemRepository.save(item2);
 
-        Item item3 = itemGenerator.generateItem(user.getId());
+        Item item3 = itemGenerator.generateAvailableItemWithOwnerId(user.getId());
         item3.setName("item3");
-        item3.setAvailable(true);
         itemRepository.save(item3);
 
-        Item item4 = itemGenerator.generateItem(user.getId());
+        Item item4 = itemGenerator.generateAvailableItemWithOwnerId(user.getId());
         item4.setName("item4");
-        item4.setAvailable(true);
         itemRepository.save(item4);
 
-        Item item5 = itemGenerator.generateItem(user.getId());
+        Item item5 = itemGenerator.generateAvailableItemWithOwnerId(user.getId());
         item5.setName("item5");
-        item5.setAvailable(true);
         itemRepository.save(item5);
 
         Optional<User> checkUser = userRepository.findById(user.getId());
@@ -362,19 +357,19 @@ public class ItemRepositoryTests {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
-        Item item1 = itemGenerator.generateItem(user.getId());
+        Item item1 = itemGenerator.generateItemWithOwnerId(user.getId());
         itemRepository.save(item1);
 
-        Item item2 = itemGenerator.generateItem(user.getId());
+        Item item2 = itemGenerator.generateItemWithOwnerId(user.getId());
         itemRepository.save(item2);
 
-        Item item3 = itemGenerator.generateItem(user.getId());
+        Item item3 = itemGenerator.generateItemWithOwnerId(user.getId());
         itemRepository.save(item3);
 
-        Item item4 = itemGenerator.generateItem(user.getId());
+        Item item4 = itemGenerator.generateItemWithOwnerId(user.getId());
         itemRepository.save(item4);
 
-        Item item5 = itemGenerator.generateItem(user.getId());
+        Item item5 = itemGenerator.generateItemWithOwnerId(user.getId());
         itemRepository.save(item5);
 
         List<Item> items = itemRepository.findAllByOwnerIdPagination(user.getId(), 1, 3);

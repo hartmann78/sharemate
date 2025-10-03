@@ -40,7 +40,7 @@ public class BookingRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item item = itemGenerator.generateItem(owner.getId());
+        Item item = itemGenerator.generateAvailableItemWithOwnerId(owner.getId());
         itemRepository.save(item);
 
         User booker = userGenerator.generateUser();
@@ -78,7 +78,7 @@ public class BookingRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item item = itemGenerator.generateItem(owner.getId());
+        Item item = itemGenerator.generateAvailableItemWithOwnerId(owner.getId());
         itemRepository.save(item);
 
         User booker = userGenerator.generateUser();
@@ -115,7 +115,7 @@ public class BookingRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item item = itemGenerator.generateItem(owner.getId());
+        Item item = itemGenerator.generateAvailableItemWithOwnerId(owner.getId());
         itemRepository.save(item);
 
         User booker = userGenerator.generateUser();
@@ -153,7 +153,7 @@ public class BookingRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item item = itemGenerator.generateItem(owner.getId());
+        Item item = itemGenerator.generateAvailableItemWithOwnerId(owner.getId());
         itemRepository.save(item);
 
         User booker = userGenerator.generateUser();
@@ -197,7 +197,7 @@ public class BookingRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item item = itemGenerator.generateItem(owner.getId());
+        Item item = itemGenerator.generateAvailableItemWithOwnerId(owner.getId());
         itemRepository.save(item);
 
         User booker1 = userGenerator.generateUser();
@@ -245,19 +245,19 @@ public class BookingRepositoryTests {
         User owner1 = userGenerator.generateUser();
         userRepository.save(owner1);
 
-        Item item1 = itemGenerator.generateItem(owner1.getId());
+        Item item1 = itemGenerator.generateAvailableItemWithOwnerId(owner1.getId());
         itemRepository.save(item1);
 
         User owner2 = userGenerator.generateUser();
         userRepository.save(owner2);
 
-        Item item2 = itemGenerator.generateItem(owner2.getId());
+        Item item2 = itemGenerator.generateAvailableItemWithOwnerId(owner2.getId());
         itemRepository.save(item2);
 
         User owner3 = userGenerator.generateUser();
         userRepository.save(owner3);
 
-        Item item3 = itemGenerator.generateItem(owner3.getId());
+        Item item3 = itemGenerator.generateAvailableItemWithOwnerId(owner3.getId());
         itemRepository.save(item3);
 
         User booker = userGenerator.generateUser();
@@ -285,7 +285,7 @@ public class BookingRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item item = itemGenerator.generateItem(owner.getId());
+        Item item = itemGenerator.generateAvailableItemWithOwnerId(owner.getId());
         itemRepository.save(item);
 
         User booker = userGenerator.generateUser();

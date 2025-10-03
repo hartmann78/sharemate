@@ -4,7 +4,9 @@ import com.practice.sharemate.model.Booking;
 import com.practice.sharemate.model.BookingRequest;
 import com.practice.sharemate.model.Item;
 import com.practice.sharemate.model.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BookingGenerator {
     public Booking generateBooking(BookingRequest bookingRequest, User booker, Item item) {
         return Booking.builder()

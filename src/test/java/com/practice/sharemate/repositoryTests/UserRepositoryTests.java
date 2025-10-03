@@ -39,8 +39,7 @@ public class UserRepositoryTests {
         userRepository.save(user2);
 
         List<User> findAllUsers = userRepository.findAll();
-        assertTrue(findAllUsers.contains(user1));
-        assertTrue(findAllUsers.contains(user2));
+        assertTrue(findAllUsers.containsAll(List.of(user1, user2)));
     }
 
     @Test

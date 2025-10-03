@@ -50,9 +50,9 @@ public class RequestRepositoryTests {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
-        Request request = requestGenerator.generateRequest(user);
-        request.setCreated(dateGenerator.generateRandomDate());
-        requestRepository.save(request);
+        Request request1 = requestGenerator.generateRequest(user);
+        request1.setCreated(dateGenerator.generateRandomDate());
+        requestRepository.save(request1);
 
         Request request2 = requestGenerator.generateRequest(user);
         request2.setCreated(dateGenerator.generateRandomDate());
@@ -63,8 +63,7 @@ public class RequestRepositoryTests {
         assertEquals(user, checkUser.get());
 
         List<Request> userRequests = requestRepository.findAllByRequestorIdOrderByCreatedDesc(user.getId());
-        assertTrue(userRequests.contains(request));
-        assertTrue(userRequests.contains(request2));
+        assertTrue(userRequests.containsAll(List.of(request1, request2)));
 
         System.out.println(userRequests);
     }

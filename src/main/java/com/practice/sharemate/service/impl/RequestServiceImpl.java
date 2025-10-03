@@ -34,6 +34,10 @@ public class RequestServiceImpl implements RequestService {
             Sort sortByDate = Sort.by(Sort.Direction.DESC, "created");
             requests = requestRepository.findAll(sortByDate);
         } else {
+            if (!userRepository.existsById(userId)) {
+                throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
+            }
+
             requests = requestRepository.findAllByRequestorIdOrderByCreatedDesc(userId);
         }
 
@@ -64,12 +68,12 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public RequestDTO findUserRequestById(Long userId, Long requestId) {
         if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundException("Пользователь с id" + userId + " не найден!");
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
 
         Optional<Request> request = requestRepository.findById(requestId);
         if (request.isEmpty()) {
-            throw new ItemNotFoundException("Запрос с id " + request + " не найден!");
+            throw new RequestNotFoundException("Запрос с id " + request + " не найден!");
         }
 
         if (!request.get().getRequestor().getId().equals(userId)) {
@@ -83,7 +87,7 @@ public class RequestServiceImpl implements RequestService {
     public RequestDTO addRequest(Long userId, Request request) {
         Optional<User> requestor = userRepository.findById(userId);
         if (requestor.isEmpty()) {
-            throw new UserNotFoundException("Пользователь с id" + userId + " не найден!");
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
 
         request.setRequestor(requestor.get());
@@ -91,5 +95,23 @@ public class RequestServiceImpl implements RequestService {
         request.setCreated(LocalDateTime.now());
 
         return requestMapper.entityToDto(requestRepository.save(request));
+    }
+
+    @Override
+    public void deleteRequest(Long userId, Long requestId) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
+        }
+
+        Optional<Request> request = requestRepository.findById(requestId);
+        if (request.isEmpty()) {
+            throw new RequestNotFoundException("Запрос с id " + request + " не найден!");
+        }
+
+        if (!request.get().getRequestor().getId().equals(userId)) {
+            throw new ForbiddenException("Доступ воспрещён!");
+        }
+
+        requestRepository.deleteById(requestId);
     }
 }

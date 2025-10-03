@@ -10,11 +10,11 @@ public interface ItemService {
 
     List<ItemDTO> findItemByNameOrDescription(String text, int from, int size);
 
-    ItemDTO findItemById(Long id);
+    ItemDTO findItemById(Long itemId);
 
-    ItemDTO addItem(Long userid, Item item);
+    ItemDTO addItem(Long userId, Item item);
 
     ItemDTO updateItem(Long userId, Long itemId, Item item);
 
-    void deleteItem(Long id);
+    void deleteItem(Long userId, Long itemId);
 }

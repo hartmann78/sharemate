@@ -4,16 +4,16 @@ import com.practice.sharemate.model.Comment;
 import com.practice.sharemate.model.Item;
 import com.practice.sharemate.model.User;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+@Component
 public class CommentGenerator {
-    public Comment generateComment(Item item, User user) {
+    public Comment generateComment() {
         return Comment.builder()
                 .text(generateText())
-                .item(item)
-                .author(user)
                 .created(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .build();
     }

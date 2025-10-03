@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public List<UserDTO> findAllUsers() {
+    public List<UserDTO> findAll() {
         List<User> users = userRepository.findAll();
 
         if (users.isEmpty()) {
@@ -33,14 +33,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findUserById(Long userId) {
+    public UserDTO findUserById(Long userId) throws UserNotFoundException {
         Optional<User> user = userRepository.findById(userId);
 
-        if (user.isPresent()) {
-            return userMapper.entityToDto(user.get());
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
 
-        throw new UserNotFoundException("Пользователь с id" + userId + " не найден!");
+        return userMapper.entityToDto(user.get());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> findUser = userRepository.findById(userId);
         if (findUser.isEmpty()) {
-            throw new UserNotFoundException("Пользователь с id" + userId + " не найден!");
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
 
         if (user.getEmail() != null && userRepository.checkUserEmail(user.getEmail()) == true && !user.getEmail().equals(findUser.get().getEmail())) {

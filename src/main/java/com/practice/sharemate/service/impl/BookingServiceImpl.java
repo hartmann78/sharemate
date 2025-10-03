@@ -38,6 +38,10 @@ public class BookingServiceImpl implements BookingService {
         if (userId == null) {
             bookings = bookingRepository.findAll(PageRequest.of(from, size)).getContent();
         } else {
+            if (!userRepository.existsById(userId)) {
+                throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
+            }
+
             bookings = bookingRepository.findAllByBookerIdPagination(userId, from, size);
         }
 
@@ -54,6 +58,10 @@ public class BookingServiceImpl implements BookingService {
             throw new BadRequestException("Неправильный запрос");
         }
 
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
+        }
+
         List<Booking> bookings = bookingRepository.findAllBookingsToOwnerPagination(userId, from, size);
 
         if (bookings.isEmpty()) {
@@ -65,8 +73,11 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDTO findBookingById(Long userId, Long bookingId) {
-        Optional<Booking> findBooking = bookingRepository.findById(bookingId);
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
+        }
 
+        Optional<Booking> findBooking = bookingRepository.findById(bookingId);
         if (findBooking.isEmpty()) {
             throw new BookingNotFoundException("Бронирование с id " + bookingId + " не найдено!");
         }
@@ -99,12 +110,12 @@ public class BookingServiceImpl implements BookingService {
 
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
-            throw new UserNotFoundException("Пользователь с id" + userId + " не найден!");
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
 
         Optional<Item> item = itemRepository.findById(bookingRequest.getItemId());
         if (item.isEmpty()) {
-            throw new ItemNotFoundException("Предмет с id" + bookingRequest.getItemId() + " не найден!");
+            throw new ItemNotFoundException("Предмет с id " + bookingRequest.getItemId() + " не найден!");
         }
 
         if (item.get().getAvailable() == false) {
@@ -149,7 +160,20 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void deleteBooking(Long bookingId) {
+    public void deleteBooking(Long userId, Long bookingId) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
+        }
+
+        Optional<Booking> booking = bookingRepository.findById(bookingId);
+        if (booking.isEmpty()) {
+            throw new BookingNotFoundException("Бронирование с id " + bookingId + " не найдено!");
+        }
+
+        if (!booking.get().getBooker().getId().equals(userId)) {
+            throw new ForbiddenException("Доступ воспрещён!");
+        }
+
         bookingRepository.deleteById(bookingId);
     }
 }

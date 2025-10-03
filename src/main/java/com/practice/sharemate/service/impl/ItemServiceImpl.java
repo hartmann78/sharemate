@@ -40,6 +40,10 @@ public class ItemServiceImpl implements ItemService {
         if (userId == null) {
             items = itemRepository.findAll(PageRequest.of(from, size)).getContent();
         } else {
+            if (!userRepository.existsById(userId)) {
+                throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
+            }
+
             items = itemRepository.findAllByOwnerIdPagination(userId, from, size);
         }
 
@@ -66,7 +70,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDTO findItemById(Long itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
-
         if (item.isEmpty()) {
             throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
         }
@@ -117,7 +120,6 @@ public class ItemServiceImpl implements ItemService {
         }
 
         Optional<Item> checkItem = itemRepository.findById(itemId);
-
         if (checkItem.isEmpty()) {
             throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
         }
@@ -144,7 +146,20 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void deleteItem(Long id) {
-        itemRepository.deleteById(id);
+    public void deleteItem(Long userId, Long itemId) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
+        }
+
+        Optional<Item> item = itemRepository.findById(itemId);
+        if (item.isEmpty()) {
+            throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
+        }
+
+        if (!item.get().getOwnerId().equals(userId)) {
+            throw new ForbiddenException("Доступ воспрещён!");
+        }
+
+        itemRepository.deleteById(itemId);
     }
 }

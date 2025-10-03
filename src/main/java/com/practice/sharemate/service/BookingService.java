@@ -16,5 +16,5 @@ public interface BookingService {
 
     BookingDTO patchBooking(Long userId, Long bookingId, Boolean approved);
 
-    void deleteBooking(Long bookingId);
+    void deleteBooking(Long userId, Long bookingId);
 }
