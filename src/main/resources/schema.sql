@@ -51,7 +51,8 @@ create table comments
     text      varchar(512),
     item_id   bigint references items (id),
     author_id bigint references users (id),
-    created   timestamp with time zone
+    created   timestamp with time zone not null,
+    updated   timestamp with time zone
 );
 
 create table answers

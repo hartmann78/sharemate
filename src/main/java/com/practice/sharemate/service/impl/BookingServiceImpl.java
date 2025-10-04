@@ -148,15 +148,15 @@ public class BookingServiceImpl implements BookingService {
             throw new ForbiddenException("Доступ воспрещён!");
         }
 
-        Booking booking = findBooking.get();
+        Booking updateBooking = findBooking.get();
 
         if (approved == true) {
-            booking.setStatus(Booking.BookingStatus.APPROVED);
+            updateBooking.setStatus(Booking.BookingStatus.APPROVED);
         } else {
-            booking.setStatus(Booking.BookingStatus.REJECTED);
+            updateBooking.setStatus(Booking.BookingStatus.REJECTED);
         }
 
-        return bookingMapper.entityToDto(bookingRepository.save(booking));
+        return bookingMapper.entityToDto(bookingRepository.save(updateBooking));
     }
 
     @Override

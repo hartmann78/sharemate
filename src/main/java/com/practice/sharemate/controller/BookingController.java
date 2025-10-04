@@ -30,22 +30,27 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDTO findBookingById(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long bookingId) {
+    public BookingDTO findBookingById(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                      @PathVariable Long bookingId) {
         return bookingService.findBookingById(userId, bookingId);
     }
 
     @PostMapping
-    public BookingDTO addBooking(@RequestHeader("X-Sharer-User-Id") Long userId, @Valid @RequestBody BookingRequest bookingRequest) {
+    public BookingDTO addBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                 @Valid @RequestBody BookingRequest bookingRequest) {
         return bookingService.addBooking(userId, bookingRequest);
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDTO patchBooking(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long bookingId, @RequestParam Boolean approved) {
+    public BookingDTO patchBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                   @PathVariable Long bookingId,
+                                   @RequestParam Boolean approved) {
         return bookingService.patchBooking(userId, bookingId, approved);
     }
 
-    @DeleteMapping
-    public void deleteBooking(Long userId, Long bookingId) {
+    @DeleteMapping("/{bookingId}")
+    public void deleteBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+                              @RequestParam Long bookingId) {
         bookingService.deleteBooking(userId, bookingId);
     }
 }

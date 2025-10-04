@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,6 +30,26 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
 
     @Override
+    public List<CommentDTO> findAll(Long itemId) {
+        if (itemId == null) {
+            throw new BadRequestException("Неверный запрос");
+        }
+
+        Optional<Item> findItem = itemRepository.findById(itemId);
+        if (findItem.isEmpty()) {
+            throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
+        }
+
+        List<Comment> comments = commentRepository.findAllCommentsByItemId(itemId);
+
+        if (comments.isEmpty()) {
+            throw new CommentNotFoundException("Комментарии не найдены!");
+        }
+
+        return commentMapper.listToDto(comments);
+    }
+
+    @Override
     public CommentDTO findCommentById(Long itemId, Long commentId) {
         if (itemId == null || commentId == null) {
             throw new BadRequestException("Неверный запрос");
@@ -38,16 +60,12 @@ public class CommentServiceImpl implements CommentService {
             throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
         }
 
-        Optional<Comment> findComment = commentRepository.findById(commentId);
-        if (findComment.isEmpty()) {
+        Optional<Comment> comment = commentRepository.findCommentByItemIdAndCommentId(itemId, commentId);
+        if (comment.isEmpty()) {
             throw new CommentNotFoundException("Комментарий с id " + commentId + " не найден!");
         }
 
-        if (!findComment.get().getItem().equals(findItem.get()) && !findItem.get().getComments().contains(findComment.get())) {
-            throw new InternalServerErrorException("Внутрення ошибка сервера");
-        }
-
-        return commentMapper.entityToDto(findComment.get());
+        return commentMapper.entityToDto(comment.get());
     }
 
     @Override
@@ -68,11 +86,11 @@ public class CommentServiceImpl implements CommentService {
 
         Booking findBooking = bookingRepository.findBookingByBookerIdAndItemId(userId, itemId);
         if (findBooking == null) {
-            throw new BookingNotFoundException("Нельзя добавить комментарий без бронирования предмета");
+            throw new BookingNotFoundException("Нельзя добавить комментарий без бронирования предмета!");
         }
 
         if (!findBooking.getStatus().equals(Booking.BookingStatus.APPROVED)) {
-            throw new ForbiddenException("Нельзя добавить комментарий без одобрения бронирования");
+            throw new ForbiddenException("Нельзя добавить комментарий без одобрения бронирования!");
         }
 
         if (findBooking.getEnd().isAfter(LocalDateTime.now())) {
@@ -84,7 +102,7 @@ public class CommentServiceImpl implements CommentService {
 
         comment.setAuthor(author);
         comment.setItem(itemToComment);
-        comment.setCreated(LocalDateTime.now());
+        comment.setCreated(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 
         commentRepository.save(comment);
 
@@ -95,6 +113,39 @@ public class CommentServiceImpl implements CommentService {
         userRepository.save(author);
 
         return commentMapper.entityToDto(comment);
+    }
+
+    @Override
+    public CommentDTO updateComment(Long userId, Long itemId, Long commentId, Comment comment) {
+        if (userId == null || itemId == null || commentId == null || comment == null) {
+            throw new BadRequestException("Неверный запрос");
+        }
+
+        if (comment.getText() == null || comment.getText().isBlank()) {
+            throw new BadRequestException("Текст комментария не должен быть пустым!");
+        }
+
+        Optional<User> findAuthor = userRepository.findById(userId);
+        if (findAuthor.isEmpty()) {
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
+        }
+
+        Optional<Item> findItem = itemRepository.findById(itemId);
+        if (findItem.isEmpty()) {
+            throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
+        }
+
+        Optional<Comment> findComment = commentRepository.findCommentByItemIdAndCommentIdAndAuthorId(itemId, userId, commentId);
+        if (findComment.isEmpty()) {
+            throw new CommentNotFoundException("Комментарий с id " + commentId + " не найден!");
+        }
+
+        Comment updateComment = findComment.get();
+
+        updateComment.setText(comment.getText());
+        updateComment.setUpdated(LocalDateTime.now());
+
+        return commentMapper.entityToDto(commentRepository.save(updateComment));
     }
 
     @Override

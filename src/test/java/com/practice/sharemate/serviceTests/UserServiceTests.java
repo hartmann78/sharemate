@@ -60,7 +60,9 @@ public class UserServiceTests {
         User updateUser = userGenerator.generateUser();
 
         UserDTO updatedUserDTO = userService.updateUser(userId, updateUser);
-        assertEquals(updatedUserDTO, userService.findUserById(updatedUserDTO.getId()));
+        assertNotNull(updatedUserDTO.getId());
+        assertEquals(updateUser.getName(), updatedUserDTO.getName());
+        assertEquals(updateUser.getEmail(), updatedUserDTO.getEmail());
     }
 
     @Test

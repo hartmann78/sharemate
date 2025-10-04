@@ -102,7 +102,10 @@ public class ItemServiceTests {
         Item updateItem = itemGenerator.generateItemWithoutOwnerId();
 
         ItemDTO updatedItemDTO = itemService.updateItem(userId, itemDTO.getId(), updateItem);
-        assertEquals(updatedItemDTO, itemService.findItemById(updatedItemDTO.getId()));
+        assertNotNull(updatedItemDTO.getId());
+        assertEquals(updateItem.getName(), updatedItemDTO.getName());
+        assertEquals(updateItem.getDescription(), updatedItemDTO.getDescription());
+        assertEquals(updateItem.getAvailable(), updatedItemDTO.getAvailable());
     }
 
     @Test

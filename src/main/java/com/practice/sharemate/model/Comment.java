@@ -32,4 +32,7 @@ public class Comment {
 
     @Column(name = "created")
     private LocalDateTime created;
+
+    @Column(name = "updated")
+    private LocalDateTime updated;
 }

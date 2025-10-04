@@ -124,25 +124,25 @@ public class ItemServiceImpl implements ItemService {
             throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
         }
 
-        Item update = checkItem.get();
+        Item updateItem = checkItem.get();
 
-        if (!update.getOwnerId().equals(userId)) {
+        if (!updateItem.getOwnerId().equals(userId)) {
             throw new ForbiddenException("id пользователя не совпадает с id владельца предмета");
         }
 
         if (item.getName() != null) {
-            update.setName(item.getName());
+            updateItem.setName(item.getName());
         }
 
         if (item.getDescription() != null) {
-            update.setDescription(item.getDescription());
+            updateItem.setDescription(item.getDescription());
         }
 
         if (item.getAvailable() != null) {
-            update.setAvailable(item.getAvailable());
+            updateItem.setAvailable(item.getAvailable());
         }
 
-        return itemMapper.entityToDto(itemRepository.save(update));
+        return itemMapper.entityToDto(itemRepository.save(updateItem));
     }
 
     @Override

@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
@@ -46,6 +47,62 @@ public class CommentServiceTests {
     CommentGenerator commentGenerator;
 
     @Test
+    void findAll() throws InterruptedException {
+        User owner = userGenerator.generateUser();
+        UserDTO ownerDTO = userService.addUser(owner);
+
+        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
+
+        User commentAuthor = userGenerator.generateUser();
+        UserDTO commentAuthorDTO = userService.addUser(commentAuthor);
+
+        BookingRequest bookingRequest = bookingRequestGenerator.generateBookingRequest(itemDTO.getId());
+        bookingRequest.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingRequest.setEnd(LocalDateTime.now().plusSeconds(2));
+
+        BookingDTO bookingDTO = bookingService.addBooking(commentAuthorDTO.getId(), bookingRequest);
+
+        bookingService.patchBooking(ownerDTO.getId(), bookingDTO.getId(), true);
+
+        TimeUnit.SECONDS.sleep(2);
+
+        Comment comment = commentGenerator.generateComment();
+        CommentDTO commentDTO = commentService.postComment(commentAuthorDTO.getId(), itemDTO.getId(), comment);
+
+        List<CommentDTO> checkComments = commentService.findAll(itemDTO.getId());
+        assertTrue(checkComments.contains(commentDTO));
+    }
+
+    @Test
+    void findCommentById() throws InterruptedException {
+        User owner = userGenerator.generateUser();
+        UserDTO ownerDTO = userService.addUser(owner);
+
+        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
+
+        User commentAuthor = userGenerator.generateUser();
+        UserDTO commentAuthorDTO = userService.addUser(commentAuthor);
+
+        BookingRequest bookingRequest = bookingRequestGenerator.generateBookingRequest(itemDTO.getId());
+        bookingRequest.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingRequest.setEnd(LocalDateTime.now().plusSeconds(2));
+
+        BookingDTO bookingDTO = bookingService.addBooking(commentAuthorDTO.getId(), bookingRequest);
+
+        bookingService.patchBooking(ownerDTO.getId(), bookingDTO.getId(), true);
+
+        TimeUnit.SECONDS.sleep(2);
+
+        Comment comment = commentGenerator.generateComment();
+        CommentDTO commentDTO = commentService.postComment(commentAuthorDTO.getId(), itemDTO.getId(), comment);
+
+        CommentDTO checkComment = commentService.findCommentById(itemDTO.getId(), commentDTO.getId());
+        assertEquals(commentDTO, checkComment);
+    }
+
+    @Test
     void postComment() throws InterruptedException {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
@@ -64,7 +121,7 @@ public class CommentServiceTests {
 
         bookingService.patchBooking(ownerDTO.getId(), bookingDTO.getId(), true);
 
-        TimeUnit.SECONDS.sleep(3);
+        TimeUnit.SECONDS.sleep(2);
 
         Comment comment = commentGenerator.generateComment();
         CommentDTO commentDTO = commentService.postComment(commentAuthorDTO.getId(), itemDTO.getId(), comment);
@@ -73,6 +130,42 @@ public class CommentServiceTests {
         assertEquals(comment.getText(), commentDTO.getText());
         assertEquals(comment.getAuthor().getName(), commentDTO.getAuthorName());
         assertEquals(comment.getCreated(), commentDTO.getCreated());
+    }
+
+    @Test
+    void updateComment() throws InterruptedException {
+        User owner = userGenerator.generateUser();
+        UserDTO ownerDTO = userService.addUser(owner);
+
+        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
+
+        User commentAuthor = userGenerator.generateUser();
+        UserDTO commentAuthorDTO = userService.addUser(commentAuthor);
+
+        BookingRequest bookingRequest = bookingRequestGenerator.generateBookingRequest(itemDTO.getId());
+        bookingRequest.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingRequest.setEnd(LocalDateTime.now().plusSeconds(2));
+
+        BookingDTO bookingDTO = bookingService.addBooking(commentAuthorDTO.getId(), bookingRequest);
+
+        bookingService.patchBooking(ownerDTO.getId(), bookingDTO.getId(), true);
+
+        TimeUnit.SECONDS.sleep(2);
+
+        Comment comment = commentGenerator.generateComment();
+        CommentDTO commentDTO = commentService.postComment(commentAuthorDTO.getId(), itemDTO.getId(), comment);
+
+        Comment updateComment = commentGenerator.generateComment();
+        CommentDTO updatedCommentDTO = commentService.updateComment(commentAuthorDTO.getId(), itemDTO.getId(), commentDTO.getId(), updateComment);
+
+        assertNotNull(updatedCommentDTO.getId());
+        assertNotNull(updatedCommentDTO.getCreated());
+
+        assertEquals(updateComment.getText(), updatedCommentDTO.getText());
+
+        assertEquals(commentDTO.getAuthorName(), updatedCommentDTO.getAuthorName());
+        assertEquals(commentDTO.getCreated(), updatedCommentDTO.getCreated());
     }
 
     @Test
@@ -94,7 +187,7 @@ public class CommentServiceTests {
 
         bookingService.patchBooking(ownerDTO.getId(), bookingDTO.getId(), true);
 
-        TimeUnit.SECONDS.sleep(3);
+        TimeUnit.SECONDS.sleep(2);
 
         Comment comment = commentGenerator.generateComment();
         CommentDTO commentDTO = commentService.postComment(commentAuthorDTO.getId(), itemDTO.getId(), comment);

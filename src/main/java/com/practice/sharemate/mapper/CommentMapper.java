@@ -15,6 +15,7 @@ public class CommentMapper {
                 .text(comment.getText())
                 .authorName(comment.getAuthor().getName())
                 .created(comment.getCreated())
+                .updated(comment.getUpdated())
                 .build();
     }
 
@@ -23,6 +24,7 @@ public class CommentMapper {
                 .id(commentDTO.getId())
                 .text(commentDTO.getText())
                 .created(commentDTO.getCreated())
+                .updated(commentDTO.getUpdated())
                 .build();
     }
 

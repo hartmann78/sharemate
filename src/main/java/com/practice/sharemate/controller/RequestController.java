@@ -21,22 +21,26 @@ public class RequestController {
     }
 
     @GetMapping("/all")
-    public List<RequestDTO> findAllPagination(@RequestParam int from, @RequestParam int size) {
+    public List<RequestDTO> findAllPagination(@RequestParam int from,
+                                              @RequestParam int size) {
         return requestService.findAllPagination(from, size);
     }
 
     @GetMapping("/{requestId}")
-    public RequestDTO findUserRequestById(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long requestId) {
+    public RequestDTO findUserRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                          @PathVariable Long requestId) {
         return requestService.findUserRequestById(userId, requestId);
     }
 
     @PostMapping
-    public RequestDTO addRequest(@RequestHeader("X-Sharer-User-Id") Long userId, @Valid @RequestBody Request request) {
+    public RequestDTO addRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                 @Valid @RequestBody Request request) {
         return requestService.addRequest(userId, request);
     }
 
-    @DeleteMapping
-    public void deleteRequest(@RequestHeader("X-Sharer-User-Id") Long userId, Long requestId) {
+    @DeleteMapping("/{requestId}")
+    public void deleteRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
+                              @RequestParam Long requestId) {
         requestService.deleteRequest(userId, requestId);
     }
 }

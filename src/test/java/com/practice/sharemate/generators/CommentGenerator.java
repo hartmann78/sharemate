@@ -1,8 +1,6 @@
 package com.practice.sharemate.generators;
 
 import com.practice.sharemate.model.Comment;
-import com.practice.sharemate.model.Item;
-import com.practice.sharemate.model.User;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +13,7 @@ public class CommentGenerator {
         return Comment.builder()
                 .text(generateText())
                 .created(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
+                .updated(null)
                 .build();
     }
 
