@@ -38,6 +38,13 @@ public class RequestController {
         return requestService.addRequest(userId, request);
     }
 
+    @PatchMapping("/{requestId}")
+    public RequestDTO updateRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                    @PathVariable Long requestId,
+                                    @Valid @RequestBody Request request) {
+        return requestService.updateRequest(userId, requestId, request);
+    }
+
     @DeleteMapping("/{requestId}")
     public void deleteRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
                               @RequestParam Long requestId) {

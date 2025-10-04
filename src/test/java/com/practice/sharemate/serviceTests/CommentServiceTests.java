@@ -51,7 +51,7 @@ public class CommentServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User commentAuthor = userGenerator.generateUser();
@@ -79,7 +79,7 @@ public class CommentServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User commentAuthor = userGenerator.generateUser();
@@ -107,7 +107,7 @@ public class CommentServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User commentAuthor = userGenerator.generateUser();
@@ -127,9 +127,10 @@ public class CommentServiceTests {
         CommentDTO commentDTO = commentService.postComment(commentAuthorDTO.getId(), itemDTO.getId(), comment);
 
         assertNotNull(commentDTO.getId());
+        assertNotNull(commentDTO.getCreated());
+
         assertEquals(comment.getText(), commentDTO.getText());
-        assertEquals(comment.getAuthor().getName(), commentDTO.getAuthorName());
-        assertEquals(comment.getCreated(), commentDTO.getCreated());
+        assertEquals(commentAuthorDTO.getName(), commentDTO.getAuthorName());
     }
 
     @Test
@@ -137,7 +138,7 @@ public class CommentServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User commentAuthor = userGenerator.generateUser();
@@ -156,14 +157,14 @@ public class CommentServiceTests {
         Comment comment = commentGenerator.generateComment();
         CommentDTO commentDTO = commentService.postComment(commentAuthorDTO.getId(), itemDTO.getId(), comment);
 
-        Comment updateComment = commentGenerator.generateComment();
-        CommentDTO updatedCommentDTO = commentService.updateComment(commentAuthorDTO.getId(), itemDTO.getId(), commentDTO.getId(), updateComment);
+        Comment update = commentGenerator.generateComment();
+        CommentDTO updatedCommentDTO = commentService.updateComment(commentAuthorDTO.getId(), itemDTO.getId(), commentDTO.getId(), update);
 
-        assertNotNull(updatedCommentDTO.getId());
-        assertNotNull(updatedCommentDTO.getCreated());
+        assertNotNull(updatedCommentDTO.getUpdated());
 
-        assertEquals(updateComment.getText(), updatedCommentDTO.getText());
+        assertEquals(update.getText(), updatedCommentDTO.getText());
 
+        assertEquals(commentDTO.getId(), updatedCommentDTO.getId());
         assertEquals(commentDTO.getAuthorName(), updatedCommentDTO.getAuthorName());
         assertEquals(commentDTO.getCreated(), updatedCommentDTO.getCreated());
     }
@@ -173,7 +174,7 @@ public class CommentServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User commentAuthor = userGenerator.generateUser();

@@ -56,12 +56,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDTO> findItemByNameOrDescription(String text, int from, int size) {
-        if (text.isBlank()) {
-            return Collections.emptyList();
-        }
-
         if (from < 0 || size <= 0) {
             throw new BadRequestException("Неправильный запрос");
+        }
+
+        if (text.isBlank()) {
+            return Collections.emptyList();
         }
 
         return itemMapper.listToDto(itemRepository.searchPagination(text, from, size));
@@ -79,10 +79,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDTO addItem(Long userId, Item item) {
-        if (userId == null || item == null) {
-            throw new BadRequestException("Неверный запрос");
-        }
-
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
@@ -92,29 +88,26 @@ public class ItemServiceImpl implements ItemService {
         item.setComments(new ArrayList<>());
         item.setAnswers(new ArrayList<>());
 
-        if (item.getRequestId() != null) {
+        itemRepository.save(item);
+
+        if (item.getRequestId() != null && item.getAvailable() == true) {
             Optional<Request> findRequest = requestRepository.findById(item.getRequestId());
             if (findRequest.isEmpty()) {
                 throw new RequestNotFoundException("Запрос с id " + item.getRequestId() + " не найден!");
-            } else {
-                Answer answer = new Answer(null, item, findRequest.get());
-                answerRepository.save(answer);
-
-                item.getAnswers().add(answer);
             }
-        }
 
-        itemRepository.save(item);
+            Answer answer = new Answer(null, item, findRequest.get());
+            answerRepository.save(answer);
+
+            item.getAnswers().add(answer);
+            itemRepository.save(item);
+        }
 
         return itemMapper.entityToDto(item);
     }
 
     @Override
     public ItemDTO updateItem(Long userId, Long itemId, Item item) {
-        if (userId == null || itemId == null || item == null) {
-            throw new BadRequestException("Неверный запрос");
-        }
-
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }

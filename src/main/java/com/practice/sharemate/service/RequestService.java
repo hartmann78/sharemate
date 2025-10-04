@@ -14,5 +14,7 @@ public interface RequestService {
 
     RequestDTO addRequest(Long userId, Request request);
 
+    RequestDTO updateRequest(Long userId, Long requestId, Request request);
+
     void deleteRequest(Long userId, Long requestId);
 }

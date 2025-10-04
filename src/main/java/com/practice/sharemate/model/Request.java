@@ -31,6 +31,9 @@ public class Request {
     @Column(name = "created")
     private LocalDateTime created;
 
-    @OneToMany(mappedBy = "request")
+    @Column(name = "updated")
+    private LocalDateTime updated;
+
+    @OneToMany(mappedBy = "request", fetch = FetchType.EAGER)
     private List<Answer> answers;
 }

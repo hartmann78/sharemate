@@ -45,10 +45,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO addUser(User user) {
-        if (user.getEmail() == null) {
-            throw new BadRequestException("Неправильный запрос");
-        }
-
         if (userRepository.checkUserEmail(user.getEmail()) == true) {
             throw new EmailExistsException("Данный email уже существует!");
         }
@@ -58,10 +54,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(Long userId, User user) {
-        if (userId == null || user == null) {
-            throw new BadRequestException("Неправильный запрос");
-        }
-
         Optional<User> findUser = userRepository.findById(userId);
         if (findUser.isEmpty()) {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");

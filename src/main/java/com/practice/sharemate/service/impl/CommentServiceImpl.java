@@ -31,10 +31,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDTO> findAll(Long itemId) {
-        if (itemId == null) {
-            throw new BadRequestException("Неверный запрос");
-        }
-
         Optional<Item> findItem = itemRepository.findById(itemId);
         if (findItem.isEmpty()) {
             throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
@@ -51,10 +47,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO findCommentById(Long itemId, Long commentId) {
-        if (itemId == null || commentId == null) {
-            throw new BadRequestException("Неверный запрос");
-        }
-
         Optional<Item> findItem = itemRepository.findById(itemId);
         if (findItem.isEmpty()) {
             throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
@@ -70,10 +62,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO postComment(Long userId, Long itemId, Comment comment) {
-        if (userId == null || itemId == null || comment == null) {
-            throw new BadRequestException("Неверный запрос");
-        }
-
         Optional<User> findUser = userRepository.findById(userId);
         if (findUser.isEmpty()) {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
@@ -117,10 +105,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO updateComment(Long userId, Long itemId, Long commentId, Comment comment) {
-        if (userId == null || itemId == null || commentId == null || comment == null) {
-            throw new BadRequestException("Неверный запрос");
-        }
-
         if (comment.getText() == null || comment.getText().isBlank()) {
             throw new BadRequestException("Текст комментария не должен быть пустым!");
         }
@@ -143,7 +127,7 @@ public class CommentServiceImpl implements CommentService {
         Comment updateComment = findComment.get();
 
         updateComment.setText(comment.getText());
-        updateComment.setUpdated(LocalDateTime.now());
+        updateComment.setUpdated(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 
         return commentMapper.entityToDto(commentRepository.save(updateComment));
     }

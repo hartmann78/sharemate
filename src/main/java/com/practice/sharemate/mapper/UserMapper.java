@@ -17,14 +17,6 @@ public class UserMapper {
                 .build();
     }
 
-    public User dtoToEntity(UserDTO userDTO) {
-        return User.builder()
-                .id(userDTO.getId())
-                .name(userDTO.getName())
-                .email(userDTO.getEmail())
-                .build();
-    }
-
     public List<UserDTO> listToDto(List<User> users) {
         List<UserDTO> userDTOS = new ArrayList<>();
         for (User user : users) {

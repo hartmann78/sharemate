@@ -11,7 +11,7 @@ import java.util.Random;
 public class ItemGenerator {
     private final Random random = new Random();
 
-    public Item generateItemWithoutOwnerId() {
+    public Item generateItem() {
         return Item.builder()
                 .name(generateName())
                 .description(generateDescription())
@@ -32,7 +32,7 @@ public class ItemGenerator {
                 .build();
     }
 
-    public Item generateAvailableItemWithoutOwnerId() {
+    public Item generateAvailableItem() {
         return Item.builder()
                 .name(generateName())
                 .description(generateDescription())

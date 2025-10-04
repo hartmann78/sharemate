@@ -23,16 +23,6 @@ public class ItemMapper {
                 .build();
     }
 
-    public Item dtoToEntity(ItemDTO itemDTO) {
-        return Item.builder()
-                .id(itemDTO.getId())
-                .name(itemDTO.getName())
-                .description(itemDTO.getDescription())
-                .available(itemDTO.getAvailable())
-                .comments(commentMapper.listToEntity(itemDTO.getComments()))
-                .build();
-    }
-
     public List<ItemDTO> listToDto(List<Item> items) {
         List<ItemDTO> itemDTOS = new ArrayList<>();
         for (Item item : items) {

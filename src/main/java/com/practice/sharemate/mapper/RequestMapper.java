@@ -19,6 +19,7 @@ public class RequestMapper {
                 .requestorId(request.getRequestor().getId())
                 .description(request.getDescription())
                 .created(request.getCreated())
+                .updated(request.getUpdated())
                 .answers(answerMapper.listToDto(request.getAnswers()))
                 .build();
     }

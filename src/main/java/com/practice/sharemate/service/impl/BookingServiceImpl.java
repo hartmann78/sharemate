@@ -150,7 +150,7 @@ public class BookingServiceImpl implements BookingService {
 
         Booking updateBooking = findBooking.get();
 
-        if (approved == true) {
+        if (approved) {
             updateBooking.setStatus(Booking.BookingStatus.APPROVED);
         } else {
             updateBooking.setStatus(Booking.BookingStatus.REJECTED);

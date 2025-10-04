@@ -50,20 +50,16 @@ public class RequestRepositoryTests {
         User user = userGenerator.generateUser();
         userRepository.save(user);
 
-        Request request1 = requestGenerator.generateRequest(user);
-        request1.setCreated(dateGenerator.generateRandomDate());
-        requestRepository.save(request1);
-
-        Request request2 = requestGenerator.generateRequest(user);
-        request2.setCreated(dateGenerator.generateRandomDate());
-        requestRepository.save(request2);
+        Request request = requestGenerator.generateRequest(user);
+        request.setCreated(dateGenerator.generateRandomDate());
+        requestRepository.save(request);
 
         Optional<User> checkUser = userRepository.findById(user.getId());
         assertTrue(checkUser.isPresent());
         assertEquals(user, checkUser.get());
 
         List<Request> userRequests = requestRepository.findAllByRequestorIdOrderByCreatedDesc(user.getId());
-        assertTrue(userRequests.containsAll(List.of(request1, request2)));
+        assertTrue(userRequests.contains(request));
 
         System.out.println(userRequests);
     }

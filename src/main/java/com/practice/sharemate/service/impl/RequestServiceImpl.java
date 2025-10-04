@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -92,9 +93,33 @@ public class RequestServiceImpl implements RequestService {
 
         request.setRequestor(requestor.get());
         request.setAnswers(new ArrayList<>());
-        request.setCreated(LocalDateTime.now());
+        request.setCreated(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 
         return requestMapper.entityToDto(requestRepository.save(request));
+    }
+
+    @Override
+    public RequestDTO updateRequest(Long userId, Long requestId, Request request) {
+        if (request.getDescription() == null || request.getDescription().isBlank()) {
+            throw new BadRequestException("Описания запроса не должно быть пустым!");
+        }
+
+        Optional<User> findRequestor = userRepository.findById(userId);
+        if (findRequestor.isEmpty()) {
+            throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
+        }
+
+        Optional<Request> findRequest = requestRepository.findById(requestId);
+        if (findRequest.isEmpty()) {
+            throw new RequestNotFoundException("Запрос с id " + findRequest + " не найден!");
+        }
+
+        Request updateRequest = findRequest.get();
+
+        updateRequest.setDescription(request.getDescription());
+        updateRequest.setUpdated(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+
+        return requestMapper.entityToDto(requestRepository.save(updateRequest));
     }
 
     @Override
@@ -103,12 +128,12 @@ public class RequestServiceImpl implements RequestService {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
 
-        Optional<Request> request = requestRepository.findById(requestId);
-        if (request.isEmpty()) {
-            throw new RequestNotFoundException("Запрос с id " + request + " не найден!");
+        Optional<Request> findRequest = requestRepository.findById(requestId);
+        if (findRequest.isEmpty()) {
+            throw new RequestNotFoundException("Запрос с id " + findRequest + " не найден!");
         }
 
-        if (!request.get().getRequestor().getId().equals(userId)) {
+        if (!findRequest.get().getRequestor().getId().equals(userId)) {
             throw new ForbiddenException("Доступ воспрещён!");
         }
 

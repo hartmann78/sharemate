@@ -42,7 +42,7 @@ public class BookingServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User booker = userGenerator.generateUser();
@@ -60,7 +60,7 @@ public class BookingServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User booker = userGenerator.generateUser();
@@ -78,7 +78,7 @@ public class BookingServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User booker = userGenerator.generateUser();
@@ -96,7 +96,7 @@ public class BookingServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User booker = userGenerator.generateUser();
@@ -113,7 +113,7 @@ public class BookingServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User booker = userGenerator.generateUser();
@@ -135,7 +135,7 @@ public class BookingServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User booker = userGenerator.generateUser();
@@ -160,7 +160,7 @@ public class BookingServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User booker = userGenerator.generateUser();
@@ -185,7 +185,7 @@ public class BookingServiceTests {
         User owner = userGenerator.generateUser();
         UserDTO ownerDTO = userService.addUser(owner);
 
-        Item item = itemGenerator.generateAvailableItemWithoutOwnerId();
+        Item item = itemGenerator.generateAvailableItem();
         ItemDTO itemDTO = itemService.addItem(ownerDTO.getId(), item);
 
         User booker = userGenerator.generateUser();

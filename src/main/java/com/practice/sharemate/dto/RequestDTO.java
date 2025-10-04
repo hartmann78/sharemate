@@ -13,5 +13,6 @@ public class RequestDTO {
     private Long requestorId;
     private String description;
     private LocalDateTime created;
+    private LocalDateTime updated;
     private List<AnswerDTO> answers;
 }

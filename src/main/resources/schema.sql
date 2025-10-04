@@ -21,8 +21,9 @@ create table requests
 (
     id           serial primary key unique,
     requestor_id bigint references users (id),
-    description  varchar(512) not null,
-    created      timestamp with time zone
+    description  varchar(512)             not null,
+    created      timestamp with time zone not null,
+    updated      timestamp with time zone
 );
 
 create table items
