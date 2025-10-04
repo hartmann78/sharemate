@@ -120,7 +120,6 @@ public class ItemServiceTests {
 
         RequestDTO checkRequest = requestService.findUserRequestById(requestorDTO.getId(), requestDTO.getId());
         assertFalse(checkRequest.getAnswers().isEmpty());
-        System.out.println(checkRequest);
     }
 
     @Test
