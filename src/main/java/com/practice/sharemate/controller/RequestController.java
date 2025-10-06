@@ -47,7 +47,7 @@ public class RequestController {
 
     @DeleteMapping("/{requestId}")
     public void deleteRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                              @RequestParam Long requestId) {
+                              @PathVariable Long requestId) {
         requestService.deleteRequest(userId, requestId);
     }
 }

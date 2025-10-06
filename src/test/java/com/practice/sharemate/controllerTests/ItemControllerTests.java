@@ -34,6 +34,7 @@ public class ItemControllerTests {
 
     @BeforeEach
     void create() {
+        item.setId(1L);
         item.setName("Hammer");
         item.setDescription("Pretty useful to break down the wall");
         item.setAvailable(false);
@@ -48,6 +49,7 @@ public class ItemControllerTests {
         mockMvc.perform(get("/items?from=0&size=1")
                         .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value("1"))
                 .andExpect(jsonPath("$[0].name").value("Hammer"))
                 .andExpect(jsonPath("$[0].description").value("Pretty useful to break down the wall"))
                 .andExpect(jsonPath("$[0].available").value("false"));
@@ -60,6 +62,7 @@ public class ItemControllerTests {
 
         mockMvc.perform(get("/items/search?text=hammer&from=0&size=1"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value("1"))
                 .andExpect(jsonPath("$[0].name").value("Hammer"))
                 .andExpect(jsonPath("$[0].description").value("Pretty useful to break down the wall"))
                 .andExpect(jsonPath("$[0].available").value("false"));
@@ -72,6 +75,7 @@ public class ItemControllerTests {
 
         mockMvc.perform(get("/items/1"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Hammer"))
                 .andExpect(jsonPath("$.description").value("Pretty useful to break down the wall"))
                 .andExpect(jsonPath("$.available").value("false"));
@@ -87,6 +91,7 @@ public class ItemControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"Hammer\", \"description\": \"Pretty useful to break down the wall\", \"available\": \"false\"}"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Hammer"))
                 .andExpect(jsonPath("$.description").value("Pretty useful to break down the wall"))
                 .andExpect(jsonPath("$.available").value("false"));
@@ -102,6 +107,7 @@ public class ItemControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"Hammer\", \"description\": \"Pretty useful to break down the wall\", \"available\": \"false\"}"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Hammer"))
                 .andExpect(jsonPath("$.description").value("Pretty useful to break down the wall"))
                 .andExpect(jsonPath("$.available").value("false"));

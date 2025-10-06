@@ -50,7 +50,7 @@ public class BookingController {
 
     @DeleteMapping("/{bookingId}")
     public void deleteBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                              @RequestParam Long bookingId) {
+                              @PathVariable Long bookingId) {
         bookingService.deleteBooking(userId, bookingId);
     }
 }

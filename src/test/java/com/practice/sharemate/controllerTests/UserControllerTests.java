@@ -70,6 +70,7 @@ public class UserControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"Bob\", \"email\": \"bob1998@gmail.com\"}"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Bob"))
                 .andExpect(jsonPath("$.email").value("bob1998@gmail.com"));
     }
@@ -83,6 +84,7 @@ public class UserControllerTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"Bob\", \"email\": \"bob1998@gmail.com\"}"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Bob"))
                 .andExpect(jsonPath("$.email").value("bob1998@gmail.com"));
     }
