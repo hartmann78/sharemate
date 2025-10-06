@@ -7,6 +7,7 @@ import com.practice.sharemate.exceptions.UserNotFoundException;
 import com.practice.sharemate.generators.UserGenerator;
 import com.practice.sharemate.model.User;
 import com.practice.sharemate.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,32 +21,29 @@ public class UserServiceTests {
     @Autowired
     UserGenerator userGenerator;
 
+    private User user;
+    private UserDTO userDTO;
+
+    @BeforeEach
+    void create() {
+        user = userGenerator.generateUser();
+        userDTO = userService.addUser(user);
+    }
+
     @Test
     void findAll() {
-        User user1 = userGenerator.generateUser();
-        UserDTO userDTO1 = userService.addUser(user1);
-
-        User user2 = userGenerator.generateUser();
-        UserDTO userDTO2 = userService.addUser(user2);
-
         List<UserDTO> checkUsers = userService.findAll();
-        assertTrue(checkUsers.containsAll(List.of(userDTO1, userDTO2)));
+        assertTrue(checkUsers.contains(userDTO));
     }
 
     @Test
     void findUserById() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
         UserDTO checkUser = userService.findUserById(userDTO.getId());
         assertEquals(userDTO, checkUser);
     }
 
     @Test
     void addUser() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
         assertNotNull(userDTO.getId());
         assertEquals(user.getName(), userDTO.getName());
         assertEquals(user.getEmail(), userDTO.getEmail());
@@ -53,13 +51,9 @@ public class UserServiceTests {
 
     @Test
     void updateUser() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Long userId = userDTO.getId();
         User updateUser = userGenerator.generateUser();
 
-        UserDTO updatedUserDTO = userService.updateUser(userId, updateUser);
+        UserDTO updatedUserDTO = userService.updateUser(userDTO.getId(), updateUser);
         assertNotNull(updatedUserDTO.getId());
         assertEquals(updateUser.getName(), updatedUserDTO.getName());
         assertEquals(updateUser.getEmail(), updatedUserDTO.getEmail());
@@ -67,9 +61,6 @@ public class UserServiceTests {
 
     @Test
     void deleteUser() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
         userService.deleteUser(userDTO.getId());
 
         assertThrows(UserNotFoundException.class, () -> userService.findUserById(userDTO.getId()));

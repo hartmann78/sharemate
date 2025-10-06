@@ -1,6 +1,7 @@
 package com.practice.sharemate.generators;
 
 import com.practice.sharemate.model.Item;
+import com.practice.sharemate.model.User;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.stereotype.Component;
 
@@ -21,12 +22,12 @@ public class ItemGenerator {
                 .build();
     }
 
-    public Item generateItemWithOwnerId(Long ownerId) {
+    public Item generateItemWithOwner(User owner) {
         return Item.builder()
                 .name(generateName())
                 .description(generateDescription())
                 .available(random.nextBoolean())
-                .ownerId(ownerId)
+                .owner(owner)
                 .bookings(new ArrayList<>())
                 .comments(new ArrayList<>())
                 .build();
@@ -42,23 +43,23 @@ public class ItemGenerator {
                 .build();
     }
 
-    public Item generateAvailableItemWithOwnerId(Long ownerId) {
+    public Item generateAvailableItemWithOwner(User owner) {
         return Item.builder()
                 .name(generateName())
                 .description(generateDescription())
                 .available(true)
-                .ownerId(ownerId)
+                .owner(owner)
                 .bookings(new ArrayList<>())
                 .comments(new ArrayList<>())
                 .build();
     }
 
-    public Item generateItemWithOwnerIdAndRequestId(Long ownerId, Long requestId) {
+    public Item generateItemWithOwnerIdAndRequestId(User owner, Long requestId) {
         return Item.builder()
                 .name(generateName())
                 .description(generateDescription())
                 .available(random.nextBoolean())
-                .ownerId(ownerId)
+                .owner(owner)
                 .requestId(requestId)
                 .bookings(new ArrayList<>())
                 .comments(new ArrayList<>())

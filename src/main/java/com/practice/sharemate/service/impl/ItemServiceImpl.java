@@ -5,6 +5,7 @@ import com.practice.sharemate.exceptions.*;
 import com.practice.sharemate.mapper.ItemMapper;
 import com.practice.sharemate.model.Answer;
 import com.practice.sharemate.model.Request;
+import com.practice.sharemate.model.User;
 import com.practice.sharemate.repository.AnswerRepository;
 import com.practice.sharemate.repository.ItemRepository;
 import com.practice.sharemate.model.Item;
@@ -79,11 +80,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDTO addItem(Long userId, Item item) {
-        if (!userRepository.existsById(userId)) {
+        Optional<User> findUser = userRepository.findById(userId);
+        if (findUser.isEmpty()) {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
 
-        item.setOwnerId(userId);
+        item.setOwner(findUser.get());
         item.setBookings(new ArrayList<>());
         item.setComments(new ArrayList<>());
         item.setAnswers(new ArrayList<>());
@@ -119,7 +121,7 @@ public class ItemServiceImpl implements ItemService {
 
         Item updateItem = checkItem.get();
 
-        if (!updateItem.getOwnerId().equals(userId)) {
+        if (!updateItem.getOwner().getId().equals(userId)) {
             throw new ForbiddenException("id пользователя не совпадает с id владельца предмета");
         }
 
@@ -149,7 +151,7 @@ public class ItemServiceImpl implements ItemService {
             throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
         }
 
-        if (!item.get().getOwnerId().equals(userId)) {
+        if (!item.get().getOwner().getId().equals(userId)) {
             throw new ForbiddenException("Доступ воспрещён!");
         }
 

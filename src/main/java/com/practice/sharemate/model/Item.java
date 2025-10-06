@@ -31,11 +31,12 @@ public class Item {
     @Column(name = "is_available")
     private Boolean available;
 
-    @Column(name = "owner_id")
-    private Long ownerId;
-
     @Column(name = "request_id")
     private Long requestId;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    private User owner;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
     private List<Booking> bookings;
@@ -53,7 +54,7 @@ public class Item {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", available=" + available +
-                ", ownerId=" + ownerId +
+                ", ownerId=" + owner.getId() +
                 ", requestId=" + requestId +
                 '}';
     }

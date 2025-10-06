@@ -15,6 +15,7 @@ import com.practice.sharemate.model.User;
 import com.practice.sharemate.service.ItemService;
 import com.practice.sharemate.service.RequestService;
 import com.practice.sharemate.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,62 +37,48 @@ public class ItemServiceTests {
     @Autowired
     RequestGenerator requestGenerator;
 
+    private User user;
+    private UserDTO userDTO;
+
+    private Item item;
+    private ItemDTO itemDTO;
+
+    @BeforeEach
+    void create() {
+        user = userGenerator.generateUser();
+        userDTO = userService.addUser(user);
+
+        item = itemGenerator.generateItem();
+        item.setAvailable(true);
+        itemDTO = itemService.addItem(userDTO.getId(), item);
+    }
+
     @Test
     void findAllWithoutUserId() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Item item = itemGenerator.generateItem();
-        ItemDTO itemDTO = itemService.addItem(userDTO.getId(), item);
-
-        List<ItemDTO> checkItems = itemService.findAll(null, 0, 20);
+        List<ItemDTO> checkItems = itemService.findAll(null, 0, 30);
         assertTrue(checkItems.contains(itemDTO));
     }
 
     @Test
     void findAllWithUserId() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Item item = itemGenerator.generateItem();
-        ItemDTO itemDTO = itemService.addItem(userDTO.getId(), item);
-
-        List<ItemDTO> checkItems = itemService.findAll(userDTO.getId(), 0, 20);
+        List<ItemDTO> checkItems = itemService.findAll(userDTO.getId(), 0, 1);
         assertTrue(checkItems.contains(itemDTO));
     }
 
     @Test
     void findItemByNameOrDescription() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Item item = itemGenerator.generateAvailableItem();
-        ItemDTO itemDTO = itemService.addItem(userDTO.getId(), item);
-
         List<ItemDTO> searchItem = itemService.findItemByNameOrDescription(itemDTO.getName(), 0, 1);
         assertTrue(searchItem.contains(itemDTO));
     }
 
     @Test
     void findItemById() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Item item = itemGenerator.generateAvailableItem();
-        ItemDTO itemDTO = itemService.addItem(userDTO.getId(), item);
-
         ItemDTO checkItem = itemService.findItemById(itemDTO.getId());
         assertEquals(itemDTO, checkItem);
     }
 
     @Test
     void addItem() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Item item = itemGenerator.generateItem();
-        ItemDTO itemDTO = itemService.addItem(userDTO.getId(), item);
-
         assertNotNull(itemDTO.getId());
         assertEquals(item.getName(), itemDTO.getName());
         assertEquals(item.getDescription(), itemDTO.getDescription());
@@ -124,12 +111,6 @@ public class ItemServiceTests {
 
     @Test
     void updateItem() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Item item = itemGenerator.generateItem();
-        ItemDTO itemDTO = itemService.addItem(userDTO.getId(), item);
-
         Long userId = userDTO.getId();
         Item updateItem = itemGenerator.generateItem();
 
@@ -142,12 +123,6 @@ public class ItemServiceTests {
 
     @Test
     void deleteItem() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Item item = itemGenerator.generateItem();
-        ItemDTO itemDTO = itemService.addItem(userDTO.getId(), item);
-
         itemService.deleteItem(userDTO.getId(), itemDTO.getId());
 
         assertThrows(ItemNotFoundException.class, () -> itemService.findItemById(itemDTO.getId()));

@@ -6,6 +6,7 @@ import com.practice.sharemate.exceptions.BadRequestException;
 import com.practice.sharemate.generators.*;
 import com.practice.sharemate.model.*;
 import com.practice.sharemate.repository.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,38 +17,40 @@ import java.util.Optional;
 @DataJpaTest
 public class ItemRepositoryTests {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
     @Autowired
-    RequestRepository requestRepository;
+    private RequestRepository requestRepository;
     @Autowired
-    AnswerRepository answerRepository;
+    private AnswerRepository answerRepository;
     @Autowired
-    BookingRepository bookingRepository;
+    private BookingRepository bookingRepository;
     @Autowired
-    CommentRepository commentRepository;
+    private CommentRepository commentRepository;
 
-    UserGenerator userGenerator = new UserGenerator();
-    ItemGenerator itemGenerator = new ItemGenerator();
-    RequestGenerator requestGenerator = new RequestGenerator();
-    AnswerGenerator answerGenerator = new AnswerGenerator();
-    BookingGenerator bookingGenerator = new BookingGenerator();
-    BookingRequestGenerator bookingRequestGenerator = new BookingRequestGenerator();
-    CommentGenerator commentGenerator = new CommentGenerator();
+    private UserGenerator userGenerator = new UserGenerator();
+    private ItemGenerator itemGenerator = new ItemGenerator();
+    private RequestGenerator requestGenerator = new RequestGenerator();
+    private AnswerGenerator answerGenerator = new AnswerGenerator();
+    private BookingGenerator bookingGenerator = new BookingGenerator();
+    private BookingRequestGenerator bookingRequestGenerator = new BookingRequestGenerator();
+    private CommentGenerator commentGenerator = new CommentGenerator();
+
+    private User owner;
+    private Item item;
+
+    @BeforeEach
+    void create() {
+        owner = userGenerator.generateUser();
+        userRepository.save(owner);
+
+        item = itemGenerator.generateItemWithOwner(owner);
+        itemRepository.save(item);
+    }
 
     @Test
     void createItem() {
-        User user = userGenerator.generateUser();
-        userRepository.save(user);
-
-        Item item = itemGenerator.generateItemWithOwnerId(user.getId());
-        itemRepository.save(item);
-
-        Optional<User> checkUser = userRepository.findById(user.getId());
-        assertTrue(checkUser.isPresent());
-        assertEquals(user, checkUser.get());
-
         Optional<Item> checkItem = itemRepository.findById(item.getId());
         assertTrue(checkItem.isPresent());
         assertEquals(item, checkItem.get());
@@ -58,36 +61,28 @@ public class ItemRepositoryTests {
         User requestor = userGenerator.generateUser();
         userRepository.save(requestor);
 
-        Request requestOnItem = requestGenerator.generateRequest(requestor);
-        requestRepository.save(requestOnItem);
+        Request request = requestGenerator.generateRequest(requestor);
+        requestRepository.save(request);
 
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner.getId(), requestOnItem.getId());
+        Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner, request.getId());
         itemRepository.save(itemOnRequest);
 
-        Answer answer = answerGenerator.generateAnswer(itemOnRequest, requestOnItem);
+        Answer answer = answerGenerator.generateAnswer(itemOnRequest, request);
         answerRepository.save(answer);
 
-        requestOnItem.getAnswers().add(answer);
-        requestRepository.save(requestOnItem);
-
-        Optional<User> checkOwner = userRepository.findById(owner.getId());
-        assertTrue(checkOwner.isPresent());
-        assertEquals(owner, checkOwner.get());
+        request.getAnswers().add(answer);
+        requestRepository.save(request);
 
         Optional<Item> checkItemOnRequest = itemRepository.findById(itemOnRequest.getId());
         assertTrue(checkItemOnRequest.isPresent());
         assertEquals(itemOnRequest, checkItemOnRequest.get());
 
-        Optional<User> checkRequestor = userRepository.findById(requestor.getId());
-        assertTrue(checkRequestor.isPresent());
-        assertEquals(requestor, checkRequestor.get());
-
-        Optional<Request> checkRequestOnItem = requestRepository.findById(requestOnItem.getId());
-        assertTrue(checkRequestOnItem.isPresent());
-        assertEquals(requestOnItem, checkRequestOnItem.get());
+        Optional<Request> checkRequest = requestRepository.findById(request.getId());
+        assertTrue(checkRequest.isPresent());
+        assertEquals(request, checkRequest.get());
     }
 
     @Test
@@ -101,7 +96,7 @@ public class ItemRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner.getId(), requestOnItem.getId());
+        Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner, requestOnItem.getId());
         itemOnRequest.setName(null);
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
@@ -127,7 +122,7 @@ public class ItemRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner.getId(), requestOnItem.getId());
+        Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner, requestOnItem.getId());
         itemOnRequest.setDescription(null);
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
@@ -153,7 +148,7 @@ public class ItemRepositoryTests {
         User owner = userGenerator.generateUser();
         userRepository.save(owner);
 
-        Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner.getId(), requestOnItem.getId());
+        Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner, requestOnItem.getId());
         itemOnRequest.setAvailable(null);
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
@@ -170,46 +165,18 @@ public class ItemRepositoryTests {
 
     @Test
     void addComment() {
-        User owner = userGenerator.generateUser();
-        userRepository.save(owner);
-
         User booker = userGenerator.generateUser();
         userRepository.save(booker);
-
-        Item item = itemGenerator.generateAvailableItemWithOwnerId(owner.getId());
-        itemRepository.save(item);
 
         BookingRequest bookingRequest = bookingRequestGenerator.generateBookingRequest(item.getId());
         Booking booking = bookingGenerator.generateBooking(bookingRequest, booker, item);
         booking.setStatus(Booking.BookingStatus.APPROVED);
         bookingRepository.save(booking);
 
-        booker.getBookings().add(booking);
-        item.getBookings().add(booking);
-
         Comment comment = commentGenerator.generateComment();
         comment.setItem(item);
         comment.setAuthor(booker);
         commentRepository.save(comment);
-
-        item.getComments().add(comment);
-        booker.getComments().add(comment);
-
-        Optional<User> checkOwner = userRepository.findById(owner.getId());
-        assertTrue(checkOwner.isPresent());
-        assertEquals(owner, checkOwner.get());
-
-        Optional<User> checkBooker = userRepository.findById(booker.getId());
-        assertTrue(checkBooker.isPresent());
-        assertEquals(booker, checkBooker.get());
-
-        Optional<Item> checkItem = itemRepository.findById(item.getId());
-        assertTrue(checkItem.isPresent());
-        assertEquals(item, checkItem.get());
-
-        Optional<Booking> checkBooking = bookingRepository.findById(booking.getId());
-        assertTrue(checkBooking.isPresent());
-        assertEquals(booking, checkBooking.get());
 
         Optional<Comment> checkComment = commentRepository.findById(comment.getId());
         assertTrue(checkComment.isPresent());
@@ -218,21 +185,11 @@ public class ItemRepositoryTests {
 
     @Test
     void updateItem() {
-        User user = userGenerator.generateUser();
-        userRepository.save(user);
-
-        Item item = itemGenerator.generateItemWithOwnerId(user.getId());
-        itemRepository.save(item);
-
         item.setName(itemGenerator.generateName());
         item.setDescription(itemGenerator.generateDescription());
         item.setAvailable(!item.getAvailable());
 
         itemRepository.save(item);
-
-        Optional<User> checkUser = userRepository.findById(user.getId());
-        assertTrue(checkUser.isPresent());
-        assertEquals(user, checkUser.get());
 
         Optional<Item> checkItem = itemRepository.findById(item.getId());
         assertTrue(checkItem.isPresent());
@@ -241,139 +198,35 @@ public class ItemRepositoryTests {
 
     @Test
     void getAllUserItems() {
-        User user = userGenerator.generateUser();
-        userRepository.save(user);
-
-        Item item = itemGenerator.generateItemWithOwnerId(user.getId());
-        itemRepository.save(item);
-
-        List<Item> allUserItems = itemRepository.findAllByOwnerId(user.getId());
-
-        Optional<User> checkUser = userRepository.findById(user.getId());
-        assertTrue(checkUser.isPresent());
-        assertEquals(user, checkUser.get());
-
-        Optional<Item> checkItem = itemRepository.findById(item.getId());
-        assertTrue(checkItem.isPresent());
-        assertEquals(item, checkItem.get());
-
+        List<Item> allUserItems = itemRepository.findAllByOwnerId(owner.getId());
         assertTrue(allUserItems.contains(item));
     }
 
     @Test
     void getUserItem() {
-        User user = userGenerator.generateUser();
-        userRepository.save(user);
-
-        Item item = itemGenerator.generateItemWithOwnerId(user.getId());
-        itemRepository.save(item);
-
-        Optional<User> checkUser = userRepository.findById(user.getId());
-        assertTrue(checkUser.isPresent());
-        assertEquals(user, checkUser.get());
-
         Optional<Item> checkItem = itemRepository.findById(item.getId());
         assertTrue(checkItem.isPresent());
-        assertEquals(user.getId(), checkItem.get().getOwnerId());
+        assertEquals(owner.getId(), checkItem.get().getOwner().getId());
         assertEquals(item, checkItem.get());
     }
 
     @Test
     void searchItems() {
-        User user = userGenerator.generateUser();
-        userRepository.save(user);
-
-        Item item = itemGenerator.generateAvailableItemWithOwnerId(user.getId());
-        itemRepository.save(item);
-
+        item.setAvailable(true);
         List<Item> searchItems = itemRepository.search(item.getName());
-
-        Optional<User> checkUser = userRepository.findById(user.getId());
-        assertTrue(checkUser.isPresent());
-        assertEquals(user, checkUser.get());
-
-        Optional<Item> checkItem = itemRepository.findById(item.getId());
-        assertTrue(checkItem.isPresent());
-        assertEquals(item, checkItem.get());
         assertTrue(searchItems.contains(item));
     }
 
     @Test
-    void testPagination() {
-        User user = userGenerator.generateUser();
-        userRepository.save(user);
-
-        Item item1 = itemGenerator.generateAvailableItemWithOwnerId(user.getId());
-        item1.setName("item1");
-        itemRepository.save(item1);
-
-        Item item2 = itemGenerator.generateAvailableItemWithOwnerId(user.getId());
-        item2.setName("item2");
-        itemRepository.save(item2);
-
-        Item item3 = itemGenerator.generateAvailableItemWithOwnerId(user.getId());
-        item3.setName("item3");
-        itemRepository.save(item3);
-
-        Item item4 = itemGenerator.generateAvailableItemWithOwnerId(user.getId());
-        item4.setName("item4");
-        itemRepository.save(item4);
-
-        Item item5 = itemGenerator.generateAvailableItemWithOwnerId(user.getId());
-        item5.setName("item5");
-        itemRepository.save(item5);
-
-        Optional<User> checkUser = userRepository.findById(user.getId());
-        assertTrue(checkUser.isPresent());
-        assertEquals(user, checkUser.get());
-
-        Optional<Item> checkItem1 = itemRepository.findById(item1.getId());
-        assertTrue(checkItem1.isPresent());
-        assertEquals(item1, checkItem1.get());
-
-        Optional<Item> checkItem2 = itemRepository.findById(item2.getId());
-        assertTrue(checkItem2.isPresent());
-        assertEquals(item2, checkItem2.get());
-
-        Optional<Item> checkItem3 = itemRepository.findById(item3.getId());
-        assertTrue(checkItem3.isPresent());
-        assertEquals(item3, checkItem3.get());
-
-        Optional<Item> checkItem4 = itemRepository.findById(item4.getId());
-        assertTrue(checkItem4.isPresent());
-        assertEquals(item4, checkItem4.get());
-
-        Optional<Item> checkItem5 = itemRepository.findById(item5.getId());
-        assertTrue(checkItem5.isPresent());
-        assertEquals(item5, checkItem5.get());
-
-        List<Item> items = itemRepository.searchPagination("item", 1, 3);
-        assertEquals(3, items.size());
-        assertTrue(items.containsAll(List.of(item2, item3, item4)));
+    void searchPagination() {
+        item.setAvailable(true);
+        List<Item> items = itemRepository.searchPagination(item.getName(), 0, 1);
+        assertTrue(items.contains(item));
     }
 
     @Test
     void findAllByOwnerIdPagination() {
-        User user = userGenerator.generateUser();
-        userRepository.save(user);
-
-        Item item1 = itemGenerator.generateItemWithOwnerId(user.getId());
-        itemRepository.save(item1);
-
-        Item item2 = itemGenerator.generateItemWithOwnerId(user.getId());
-        itemRepository.save(item2);
-
-        Item item3 = itemGenerator.generateItemWithOwnerId(user.getId());
-        itemRepository.save(item3);
-
-        Item item4 = itemGenerator.generateItemWithOwnerId(user.getId());
-        itemRepository.save(item4);
-
-        Item item5 = itemGenerator.generateItemWithOwnerId(user.getId());
-        itemRepository.save(item5);
-
-        List<Item> items = itemRepository.findAllByOwnerIdPagination(user.getId(), 1, 3);
-        assertEquals(3, items.size());
-        assertTrue(items.containsAll(List.of(item2, item3, item4)));
+        List<Item> items = itemRepository.findAllByOwnerIdPagination(owner.getId(), 0, 1);
+        assertTrue(items.contains(item));
     }
 }

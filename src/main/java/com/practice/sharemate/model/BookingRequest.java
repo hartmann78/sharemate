@@ -1,13 +1,15 @@
 package com.practice.sharemate.model;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookingRequest {
     @NotNull
     private Long itemId;

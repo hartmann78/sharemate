@@ -83,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         Booking booking = findBooking.get();
-        if (!booking.getBooker().getId().equals(userId) && !booking.getItem().getOwnerId().equals(userId)) {
+        if (!booking.getBooker().getId().equals(userId) && !booking.getItem().getOwner().getId().equals(userId)) {
             throw new ForbiddenException("Доступ воспрещён!");
         }
 
@@ -144,7 +144,7 @@ public class BookingServiceImpl implements BookingService {
             throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
         }
 
-        if (!userId.equals(findItem.get().getOwnerId())) {
+        if (!userId.equals(findItem.get().getOwner().getId())) {
             throw new ForbiddenException("Доступ воспрещён!");
         }
 

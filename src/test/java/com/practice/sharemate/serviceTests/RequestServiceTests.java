@@ -11,6 +11,7 @@ import com.practice.sharemate.model.Request;
 import com.practice.sharemate.model.User;
 import com.practice.sharemate.service.RequestService;
 import com.practice.sharemate.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,62 +29,47 @@ public class RequestServiceTests {
     @Autowired
     RequestGenerator requestGenerator;
 
+    private User user;
+    private UserDTO userDTO;
+
+    private Request request;
+    private RequestDTO requestDTO;
+
+    @BeforeEach
+    void create() {
+        user = userGenerator.generateUser();
+        userDTO = userService.addUser(user);
+
+        request = requestGenerator.generateRequest();
+        requestDTO = requestService.addRequest(userDTO.getId(), request);
+    }
+
     @Test
     void findAllWithoutUserId() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Request request = requestGenerator.generateRequest();
-        RequestDTO requestDTO = requestService.addRequest(userDTO.getId(), request);
-
         List<RequestDTO> checkRequests = requestService.findAll(null);
         assertTrue(checkRequests.contains(requestDTO));
     }
 
     @Test
     void findAllWithUserId() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Request request = requestGenerator.generateRequest();
-        RequestDTO requestDTO = requestService.addRequest(userDTO.getId(), request);
-
         List<RequestDTO> checkRequests = requestService.findAll(userDTO.getId());
         assertTrue(checkRequests.contains(requestDTO));
     }
 
     @Test
     void findAllPagination() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Request request = requestGenerator.generateRequest();
-        RequestDTO requestDTO = requestService.addRequest(userDTO.getId(), request);
-
         List<RequestDTO> checkRequests = requestService.findAllPagination(0, 20);
         assertTrue(checkRequests.contains(requestDTO));
     }
 
     @Test
     void findUserRequestById() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Request request = requestGenerator.generateRequest();
-        RequestDTO requestDTO = requestService.addRequest(userDTO.getId(), request);
-
         RequestDTO checkRequests = requestService.findUserRequestById(userDTO.getId(), requestDTO.getId());
         assertEquals(requestDTO, checkRequests);
     }
 
     @Test
     void addRequest() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Request request = requestGenerator.generateRequest();
-        RequestDTO requestDTO = requestService.addRequest(userDTO.getId(), request);
-
         assertNotNull(requestDTO.getId());
         assertNotNull(requestDTO.getAnswers());
         assertNotNull(requestDTO.getCreated());
@@ -94,12 +80,6 @@ public class RequestServiceTests {
 
     @Test
     void updateRequest() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Request request = requestGenerator.generateRequest();
-        RequestDTO requestDTO = requestService.addRequest(userDTO.getId(), request);
-
         Request update = requestGenerator.generateRequest();
         RequestDTO updatedRequestDTO = requestService.updateRequest(userDTO.getId(), requestDTO.getId(), update);
 
@@ -115,12 +95,6 @@ public class RequestServiceTests {
 
     @Test
     void deleteRequest() {
-        User user = userGenerator.generateUser();
-        UserDTO userDTO = userService.addUser(user);
-
-        Request request = requestGenerator.generateRequest();
-        RequestDTO requestDTO = requestService.addRequest(userDTO.getId(), request);
-
         requestService.deleteRequest(userDTO.getId(), requestDTO.getId());
 
         assertThrows(RequestNotFoundException.class, () -> requestService.findUserRequestById(userDTO.getId(), requestDTO.getId()));

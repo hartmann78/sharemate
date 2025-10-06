@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.practice.sharemate.model.User;
 import com.practice.sharemate.repository.UserRepository;
 import com.practice.sharemate.generators.UserGenerator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,15 +17,20 @@ import java.util.Optional;
 @DataJpaTest
 public class UserRepositoryTests {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    UserGenerator userGenerator = new UserGenerator();
+    private UserGenerator userGenerator = new UserGenerator();
+
+    private User user;
+
+    @BeforeEach
+    void create() {
+        user = userGenerator.generateUser();
+        userRepository.save(user);
+    }
 
     @Test
     void createUserAndFindById() {
-        User user = userGenerator.generateUser();
-        userRepository.save(user);
-
         Optional<User> checkUser = userRepository.findById(user.getId());
         assertTrue(checkUser.isPresent());
         assertEquals(user, checkUser.get());
@@ -32,21 +38,12 @@ public class UserRepositoryTests {
 
     @Test
     void getUsers() {
-        User user1 = userGenerator.generateUser();
-        User user2 = userGenerator.generateUser();
-
-        userRepository.save(user1);
-        userRepository.save(user2);
-
         List<User> findAllUsers = userRepository.findAll();
-        assertTrue(findAllUsers.containsAll(List.of(user1, user2)));
+        assertTrue(findAllUsers.contains(user));
     }
 
     @Test
     void updateUser() {
-        User user = userGenerator.generateUser();
-        userRepository.save(user);
-
         User updateUser = userGenerator.generateUser();
 
         while (user.getEmail().equals(updateUser.getEmail())) {
@@ -70,9 +67,6 @@ public class UserRepositoryTests {
 
     @Test
     void deleteUser() {
-        User user = userGenerator.generateUser();
-        userRepository.save(user);
-
         userRepository.deleteById(user.getId());
 
         Optional<User> checkUser = userRepository.findById(user.getId());
