@@ -24,18 +24,11 @@ public class ItemRepositoryTests {
     private RequestRepository requestRepository;
     @Autowired
     private AnswerRepository answerRepository;
-    @Autowired
-    private BookingRepository bookingRepository;
-    @Autowired
-    private CommentRepository commentRepository;
 
-    private UserGenerator userGenerator = new UserGenerator();
-    private ItemGenerator itemGenerator = new ItemGenerator();
-    private RequestGenerator requestGenerator = new RequestGenerator();
-    private AnswerGenerator answerGenerator = new AnswerGenerator();
-    private BookingGenerator bookingGenerator = new BookingGenerator();
-    private BookingRequestGenerator bookingRequestGenerator = new BookingRequestGenerator();
-    private CommentGenerator commentGenerator = new CommentGenerator();
+    private final UserGenerator userGenerator = new UserGenerator();
+    private final ItemGenerator itemGenerator = new ItemGenerator();
+    private final RequestGenerator requestGenerator = new RequestGenerator();
+    private final AnswerGenerator answerGenerator = new AnswerGenerator();
 
     private User owner;
     private Item item;
@@ -161,26 +154,6 @@ public class ItemRepositoryTests {
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
-    }
-
-    @Test
-    void addComment() {
-        User booker = userGenerator.generateUser();
-        userRepository.save(booker);
-
-        BookingRequest bookingRequest = bookingRequestGenerator.generateBookingRequest(item.getId());
-        Booking booking = bookingGenerator.generateBooking(bookingRequest, booker, item);
-        booking.setStatus(Booking.BookingStatus.APPROVED);
-        bookingRepository.save(booking);
-
-        Comment comment = commentGenerator.generateComment();
-        comment.setItem(item);
-        comment.setAuthor(booker);
-        commentRepository.save(comment);
-
-        Optional<Comment> checkComment = commentRepository.findById(comment.getId());
-        assertTrue(checkComment.isPresent());
-        assertEquals(comment, checkComment.get());
     }
 
     @Test

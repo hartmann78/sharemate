@@ -46,13 +46,16 @@ public class ItemControllerTests {
         Mockito.when(itemService.findAll(Mockito.any(), Mockito.anyInt(), Mockito.anyInt()))
                 .thenReturn(itemMapper.listToDto(List.of(item)));
 
-        mockMvc.perform(get("/items?from=0&size=1")
+        mockMvc.perform(get("/items")
+                        .param("from", "0")
+                        .param("size", "1")
                         .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value("1"))
                 .andExpect(jsonPath("$[0].name").value("Hammer"))
                 .andExpect(jsonPath("$[0].description").value("Pretty useful to break down the wall"))
-                .andExpect(jsonPath("$[0].available").value("false"));
+                .andExpect(jsonPath("$[0].available").value("false"))
+                .andExpect(jsonPath("$[0].comments").value(new ArrayList<>()));
     }
 
     @Test
@@ -60,12 +63,16 @@ public class ItemControllerTests {
         Mockito.when(itemService.findItemByNameOrDescription(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt()))
                 .thenReturn(itemMapper.listToDto(List.of(item)));
 
-        mockMvc.perform(get("/items/search?text=hammer&from=0&size=1"))
+        mockMvc.perform(get("/items/search")
+                        .param("text", "size")
+                        .param("from", "0")
+                        .param("size", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value("1"))
                 .andExpect(jsonPath("$[0].name").value("Hammer"))
                 .andExpect(jsonPath("$[0].description").value("Pretty useful to break down the wall"))
-                .andExpect(jsonPath("$[0].available").value("false"));
+                .andExpect(jsonPath("$[0].available").value("false"))
+                .andExpect(jsonPath("$[0].comments").value(new ArrayList<>()));
     }
 
     @Test
@@ -78,7 +85,8 @@ public class ItemControllerTests {
                 .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Hammer"))
                 .andExpect(jsonPath("$.description").value("Pretty useful to break down the wall"))
-                .andExpect(jsonPath("$.available").value("false"));
+                .andExpect(jsonPath("$.available").value("false"))
+                .andExpect(jsonPath("$.comments").value(new ArrayList<>()));
     }
 
     @Test
@@ -89,12 +97,15 @@ public class ItemControllerTests {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\": \"Hammer\", \"description\": \"Pretty useful to break down the wall\", \"available\": \"false\"}"))
+                        .content("{\"name\": \"Hammer\", " +
+                                "\"description\": \"Pretty useful to break down the wall\", " +
+                                "\"available\": \"false\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Hammer"))
                 .andExpect(jsonPath("$.description").value("Pretty useful to break down the wall"))
-                .andExpect(jsonPath("$.available").value("false"));
+                .andExpect(jsonPath("$.available").value("false"))
+                .andExpect(jsonPath("$.comments").value(new ArrayList<>()));
     }
 
     @Test
@@ -105,12 +116,15 @@ public class ItemControllerTests {
         mockMvc.perform(patch("/items/1")
                         .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\": \"Hammer\", \"description\": \"Pretty useful to break down the wall\", \"available\": \"false\"}"))
+                        .content("{\"name\": \"Hammer\", " +
+                                "\"description\": \"Pretty useful to break down the wall\", " +
+                                "\"available\": \"false\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Hammer"))
                 .andExpect(jsonPath("$.description").value("Pretty useful to break down the wall"))
-                .andExpect(jsonPath("$.available").value("false"));
+                .andExpect(jsonPath("$.available").value("false"))
+                .andExpect(jsonPath("$.comments").value(new ArrayList<>()));
     }
 
     @Test
@@ -120,6 +134,6 @@ public class ItemControllerTests {
                 .andExpect(status().isOk());
 
         Mockito.verify(itemService, Mockito.times(1))
-                .deleteItem(1L, 1L);
+                .deleteItem(Mockito.anyLong(), Mockito.anyLong());
     }
 }

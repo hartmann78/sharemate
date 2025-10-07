@@ -31,10 +31,10 @@ public class BookingRepositoryTests {
     @Autowired
     private BookingRepository bookingRepository;
 
-    private UserGenerator userGenerator = new UserGenerator();
-    private ItemGenerator itemGenerator = new ItemGenerator();
-    private BookingRequestGenerator bookingRequestGenerator = new BookingRequestGenerator();
-    private BookingGenerator bookingGenerator = new BookingGenerator();
+    private final UserGenerator userGenerator = new UserGenerator();
+    private final ItemGenerator itemGenerator = new ItemGenerator();
+    private final BookingRequestGenerator bookingRequestGenerator = new BookingRequestGenerator();
+    private final BookingGenerator bookingGenerator = new BookingGenerator();
 
     private User owner;
     private Item item;

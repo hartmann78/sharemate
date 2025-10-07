@@ -101,7 +101,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public RequestDTO updateRequest(Long userId, Long requestId, Request request) {
         if (request.getDescription() == null || request.getDescription().isBlank()) {
-            throw new BadRequestException("Описания запроса не должно быть пустым!");
+            throw new BadRequestException("Описание запроса не должно быть пустым!");
         }
 
         Optional<User> findRequestor = userRepository.findById(userId);
@@ -109,12 +109,16 @@ public class RequestServiceImpl implements RequestService {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
 
-        Optional<Request> findRequest = requestRepository.findById(requestId);
+        Optional<Request> findRequest = requestRepository.findByRequestIdAndRequestorId(requestId, userId);
         if (findRequest.isEmpty()) {
             throw new RequestNotFoundException("Запрос с id " + findRequest + " не найден!");
         }
 
         Request updateRequest = findRequest.get();
+
+        if (updateRequest.getDescription().equals(request.getDescription())) {
+            return requestMapper.entityToDto(updateRequest);
+        }
 
         updateRequest.setDescription(request.getDescription());
         updateRequest.setUpdated(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));

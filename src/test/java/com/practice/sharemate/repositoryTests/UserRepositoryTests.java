@@ -19,7 +19,7 @@ public class UserRepositoryTests {
     @Autowired
     private UserRepository userRepository;
 
-    private UserGenerator userGenerator = new UserGenerator();
+    private final UserGenerator userGenerator = new UserGenerator();
 
     private User user;
 
@@ -43,12 +43,15 @@ public class UserRepositoryTests {
     }
 
     @Test
+    void checkUserEmailExists() {
+        Boolean check = userRepository.checkUserEmailExists(user.getEmail());
+        assertTrue(check);
+    }
+
+
+    @Test
     void updateUser() {
         User updateUser = userGenerator.generateUser();
-
-        while (user.getEmail().equals(updateUser.getEmail())) {
-            updateUser.setEmail(userGenerator.generateEmail());
-        }
 
         if (updateUser.getName() != null && !updateUser.getName().equals(user.getName())) {
             user.setName(updateUser.getName());

@@ -31,5 +31,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "  and u.id = ?2 " +
             "  and c.id = ?3",
             nativeQuery = true)
-    Optional<Comment> findCommentByItemIdAndCommentIdAndAuthorId(Long itemId, Long userId, Long commentId);
+    Optional<Comment> findCommentByItemIdAndAuthorIdAndCommentId(Long itemId, Long userId, Long commentId);
 }

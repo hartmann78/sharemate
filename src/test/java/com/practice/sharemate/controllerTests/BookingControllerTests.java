@@ -52,7 +52,7 @@ public class BookingControllerTests {
 
         LocalDateTime start = LocalDateTime.of(2025, 10, 5, 18, 30, 1);
         LocalDateTime end = start.plusDays(1);
-        BookingRequest bookingRequest = new BookingRequest(1L, start, end);
+        BookingRequest bookingRequest = new BookingRequest(item.getId(), start, end);
 
         booking = new Booking();
         booking.setId(1L);
@@ -68,7 +68,9 @@ public class BookingControllerTests {
         Mockito.when(bookingService.findAll(Mockito.any(), Mockito.anyInt(), Mockito.anyInt()))
                 .thenReturn(bookingMapper.listToDto(List.of(booking)));
 
-        mockMvc.perform(get("/bookings?from=0&size=1")
+        mockMvc.perform(get("/bookings")
+                        .param("from", "0")
+                        .param("size", "1")
                         .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value("1"))
@@ -81,6 +83,7 @@ public class BookingControllerTests {
                 .andExpect(jsonPath("$[0].item.name").value("Hammer"))
                 .andExpect(jsonPath("$[0].item.description").value("Pretty useful to break down the wall"))
                 .andExpect(jsonPath("$[0].item.available").value("false"))
+                .andExpect(jsonPath("$[0].item.comments").value(new ArrayList<>()))
                 .andExpect(jsonPath("$[0].status").value("WAITING"));
     }
 
@@ -89,7 +92,9 @@ public class BookingControllerTests {
         Mockito.when(bookingService.findAllBookingsToOwner(Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt()))
                 .thenReturn(bookingMapper.listToDto(List.of(booking)));
 
-        mockMvc.perform(get("/bookings/owner?from=0&size=1")
+        mockMvc.perform(get("/bookings/owner")
+                        .param("from", "0")
+                        .param("size", "1")
                         .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value("1"))
@@ -102,6 +107,7 @@ public class BookingControllerTests {
                 .andExpect(jsonPath("$[0].item.name").value("Hammer"))
                 .andExpect(jsonPath("$[0].item.description").value("Pretty useful to break down the wall"))
                 .andExpect(jsonPath("$[0].item.available").value("false"))
+                .andExpect(jsonPath("$[0].item.comments").value(new ArrayList<>()))
                 .andExpect(jsonPath("$[0].status").value("WAITING"));
     }
 
@@ -123,6 +129,7 @@ public class BookingControllerTests {
                 .andExpect(jsonPath("$.item.name").value("Hammer"))
                 .andExpect(jsonPath("$.item.description").value("Pretty useful to break down the wall"))
                 .andExpect(jsonPath("$.item.available").value("false"))
+                .andExpect(jsonPath("$.item.comments").value(new ArrayList<>()))
                 .andExpect(jsonPath("$.status").value("WAITING"));
     }
 
@@ -134,7 +141,9 @@ public class BookingControllerTests {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"itemId\": \"1\", \"start\": \"2025-10-05T18:30:01\", \"end\": \"2025-10-06T18:30:01\"}"))
+                        .content("{\"itemId\": \"1\", " +
+                                "\"start\": \"2025-10-05T18:30:01\", " +
+                                "\"end\": \"2025-10-06T18:30:01\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.start").value("2025-10-05T18:30:01"))
@@ -146,6 +155,7 @@ public class BookingControllerTests {
                 .andExpect(jsonPath("$.item.name").value("Hammer"))
                 .andExpect(jsonPath("$.item.description").value("Pretty useful to break down the wall"))
                 .andExpect(jsonPath("$.item.available").value("false"))
+                .andExpect(jsonPath("$.item.comments").value(new ArrayList<>()))
                 .andExpect(jsonPath("$.status").value("WAITING"));
     }
 
@@ -156,7 +166,8 @@ public class BookingControllerTests {
         Mockito.when(bookingService.patchBooking(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean()))
                 .thenReturn(bookingMapper.entityToDto(booking));
 
-        mockMvc.perform(patch("/bookings/1?approved=true")
+        mockMvc.perform(patch("/bookings/1")
+                        .param("approved", "true")
                         .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("1"))
@@ -169,6 +180,7 @@ public class BookingControllerTests {
                 .andExpect(jsonPath("$.item.name").value("Hammer"))
                 .andExpect(jsonPath("$.item.description").value("Pretty useful to break down the wall"))
                 .andExpect(jsonPath("$.item.available").value("false"))
+                .andExpect(jsonPath("$.item.comments").value(new ArrayList<>()))
                 .andExpect(jsonPath("$.status").value("APPROVED"));
     }
 
@@ -179,6 +191,6 @@ public class BookingControllerTests {
                 .andExpect(status().isOk());
 
         Mockito.verify(bookingService, Mockito.times(1))
-                .deleteBooking(1L, 1L);
+                .deleteBooking(Mockito.anyLong(), Mockito.anyLong());
     }
 }

@@ -119,12 +119,16 @@ public class CommentServiceImpl implements CommentService {
             throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
         }
 
-        Optional<Comment> findComment = commentRepository.findCommentByItemIdAndCommentIdAndAuthorId(itemId, userId, commentId);
+        Optional<Comment> findComment = commentRepository.findCommentByItemIdAndAuthorIdAndCommentId(itemId, userId, commentId);
         if (findComment.isEmpty()) {
             throw new CommentNotFoundException("Комментарий с id " + commentId + " не найден!");
         }
 
         Comment updateComment = findComment.get();
+
+        if (updateComment.getText().equals(comment.getText())) {
+            return commentMapper.entityToDto(updateComment);
+        }
 
         updateComment.setText(comment.getText());
         updateComment.setUpdated(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));

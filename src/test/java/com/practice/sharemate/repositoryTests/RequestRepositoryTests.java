@@ -24,8 +24,8 @@ public class RequestRepositoryTests {
     @Autowired
     private RequestRepository requestRepository;
 
-    private UserGenerator userGenerator = new UserGenerator();
-    private RequestGenerator requestGenerator = new RequestGenerator();
+    private final UserGenerator userGenerator = new UserGenerator();
+    private final RequestGenerator requestGenerator = new RequestGenerator();
 
     private User user;
     private Request request;
@@ -57,6 +57,13 @@ public class RequestRepositoryTests {
         Optional<Request> checkRequest = requestRepository.findById(request.getId());
         assertTrue(checkRequest.isPresent());
         assertEquals(user, checkRequest.get().getRequestor());
+        assertEquals(request, checkRequest.get());
+    }
+
+    @Test
+    void findByRequestIdAndRequestorId() {
+        Optional<Request> checkRequest = requestRepository.findByRequestIdAndRequestorId(request.getId(), user.getId());
+        assertTrue(checkRequest.isPresent());
         assertEquals(request, checkRequest.get());
     }
 }

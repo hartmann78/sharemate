@@ -13,6 +13,4 @@ public class AnswerGenerator {
                 .request(request)
                 .build();
     }
-
-
 }

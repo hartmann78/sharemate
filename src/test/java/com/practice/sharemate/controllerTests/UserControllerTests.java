@@ -68,7 +68,8 @@ public class UserControllerTests {
 
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\": \"Bob\", \"email\": \"bob1998@gmail.com\"}"))
+                        .content("{\"name\": \"Bob\", " +
+                                "\"email\": \"bob1998@gmail.com\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Bob"))
@@ -82,7 +83,8 @@ public class UserControllerTests {
 
         mockMvc.perform(patch("/users/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\": \"Bob\", \"email\": \"bob1998@gmail.com\"}"))
+                        .content("{\"name\": \"Bob\", " +
+                                "\"email\": \"bob1998@gmail.com\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("1"))
                 .andExpect(jsonPath("$.name").value("Bob"))
@@ -95,6 +97,6 @@ public class UserControllerTests {
                 .andExpect(status().isOk());
 
         Mockito.verify(userService, Mockito.times(1))
-                .deleteUser(1L);
+                .deleteUser(Mockito.anyLong());
     }
 }

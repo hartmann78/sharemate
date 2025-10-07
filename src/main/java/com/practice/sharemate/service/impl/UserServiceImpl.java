@@ -2,7 +2,6 @@ package com.practice.sharemate.service.impl;
 
 import com.practice.sharemate.dto.UserDTO;
 import com.practice.sharemate.mapper.UserMapper;
-import com.practice.sharemate.exceptions.BadRequestException;
 import com.practice.sharemate.exceptions.EmailExistsException;
 import com.practice.sharemate.exceptions.UserNotFoundException;
 import com.practice.sharemate.model.User;
@@ -45,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO addUser(User user) {
-        if (userRepository.checkUserEmail(user.getEmail()) == true) {
+        if (userRepository.checkUserEmailExists(user.getEmail()) == true) {
             throw new EmailExistsException("Данный email уже существует!");
         }
 
@@ -59,7 +58,7 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
 
-        if (user.getEmail() != null && userRepository.checkUserEmail(user.getEmail()) == true && !user.getEmail().equals(findUser.get().getEmail())) {
+        if (user.getEmail() != null && !user.getEmail().equals(findUser.get().getEmail()) && userRepository.checkUserEmailExists(user.getEmail()) == true) {
             throw new EmailExistsException("Данный email уже занят!");
         }
 
