@@ -1,21 +1,18 @@
 package com.practice.sharemate.controllerTests;
 
-import com.practice.sharemate.mapper.CommentMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.practice.sharemate.model.*;
-import com.practice.sharemate.service.CommentService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,115 +20,171 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CommentControllerTests {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private CommentMapper commentMapper;
-    @MockitoBean
-    private CommentService commentService;
+    private ObjectMapper objectMapper;
 
-    private final Comment comment = new Comment();
+    @Test
+    @Order(1)
+    void postComment() throws Exception {
+        // Create owner
+        User owner = new User();
+        owner.setName("Benjamin Zemlak");
+        owner.setEmail("Jesus96@yahoo.com");
 
-    @BeforeEach
-    void create() {
-        User user = new User();
-        user.setId(1L);
-        user.setName("Bob");
-        user.setEmail("bob1998@gmail.com");
+        String ownerJson = objectMapper.writeValueAsString(owner);
 
+        mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(ownerJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.name").value("Benjamin Zemlak"))
+                .andExpect(jsonPath("$.email").value("Jesus96@yahoo.com"));
+
+        // Create item
         Item item = new Item();
-        item.setId(1L);
         item.setName("Hammer");
         item.setDescription("Pretty useful to break down the wall");
-        item.setAvailable(false);
-        item.setComments(new ArrayList<>());
+        item.setAvailable(true);
 
-        LocalDateTime start = LocalDateTime.of(2025, 10, 5, 18, 30, 1);
-        LocalDateTime end = start.plusDays(1);
-        BookingRequest bookingRequest = new BookingRequest(item.getId(), start, end);
+        String itemJson = objectMapper.writeValueAsString(item);
 
-        Booking booking = new Booking();
-        booking.setId(1L);
-        booking.setStart(bookingRequest.getStart());
-        booking.setEnd(bookingRequest.getEnd());
-        booking.setBooker(user);
-        booking.setItem(item);
-        booking.setStatus(Booking.BookingStatus.APPROVED);
+        mockMvc.perform(post("/items")
+                        .header("X-Sharer-User-Id", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(itemJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.name").value("Hammer"))
+                .andExpect(jsonPath("$.description").value("Pretty useful to break down the wall"))
+                .andExpect(jsonPath("$.available").value("true"))
+                .andExpect(jsonPath("$.comments").exists());
 
-        comment.setId(1L);
-        comment.setText("Pretty good!");
-        comment.setAuthor(user);
-        comment.setItem(item);
-        comment.setCreated(end.plusDays(1));
+        // Create booker
+        User booker = new User();
+        booker.setName("Derek Mann");
+        booker.setEmail("Heidi37@yahoo.com");
+
+        String bookerJson = objectMapper.writeValueAsString(booker);
+
+        mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookerJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("2"))
+                .andExpect(jsonPath("$.name").value("Derek Mann"))
+                .andExpect(jsonPath("$.email").value("Heidi37@yahoo.com"));
+
+        // Create booking
+        BookingRequest bookingRequest = new BookingRequest();
+        bookingRequest.setItemId(1L);
+        bookingRequest.setStart(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).plusSeconds(1));
+        bookingRequest.setEnd(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).plusSeconds(2));
+
+        String bookingRequestJson = objectMapper.writeValueAsString(bookingRequest);
+
+        mockMvc.perform(post("/bookings")
+                        .header("X-Sharer-User-Id", 2L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookingRequestJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.start").value(bookingRequest.getStart().toString()))
+                .andExpect(jsonPath("$.end").value(bookingRequest.getEnd().toString()))
+                .andExpect(jsonPath("$.booker.id").value("2"))
+                .andExpect(jsonPath("$.booker.name").value("Derek Mann"))
+                .andExpect(jsonPath("$.booker.email").value("Heidi37@yahoo.com"))
+                .andExpect(jsonPath("$.item.id").value("1"))
+                .andExpect(jsonPath("$.item.name").value("Hammer"))
+                .andExpect(jsonPath("$.item.description").value("Pretty useful to break down the wall"))
+                .andExpect(jsonPath("$.item.available").value("true"))
+                .andExpect(jsonPath("$.item.comments").exists())
+                .andExpect(jsonPath("$.status").value("WAITING"));
+
+        // Approve booking
+        mockMvc.perform(patch("/bookings/1")
+                        .param("approved", "true")
+                        .header("X-Sharer-User-Id", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("APPROVED"));
+
+        // Create commentary
+        TimeUnit.SECONDS.sleep(2);
+
+        Comment comment = new Comment();
+        comment.setText("Pretty Good!");
+
+        String commentJson = objectMapper.writeValueAsString(comment);
+
+        mockMvc.perform(post("/items/1/comment")
+                        .header("X-Sharer-User-Id", "2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(commentJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.text").value("Pretty Good!"))
+                .andExpect(jsonPath("$.authorName").value("Derek Mann"))
+                .andExpect(jsonPath("$.created").exists())
+                .andExpect(jsonPath("$.updated").isEmpty());
     }
 
-    @Test
-    void findAll() throws Exception {
-        Mockito.when(commentService.findAll(Mockito.anyLong()))
-                .thenReturn(commentMapper.listToDto(List.of(comment)));
 
-        mockMvc.perform(get("/items/1/comment")
-                        .header("X-Sharer-User-Id", "1"))
+    @Test
+    @Order(2)
+    void findAll() throws Exception {
+        mockMvc.perform(get("/items/1/comment"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value("1"))
-                .andExpect(jsonPath("$[0].text").value("Pretty good!"))
-                .andExpect(jsonPath("$[0].authorName").value("Bob"))
-                .andExpect(jsonPath("$[0].created").value("2025-10-07T18:30:01"));
+                .andExpect(jsonPath("$[0].text").value("Pretty Good!"))
+                .andExpect(jsonPath("$[0].authorName").value("Derek Mann"))
+                .andExpect(jsonPath("$[0].created").exists())
+                .andExpect(jsonPath("$[0].updated").isEmpty());
+
     }
 
     @Test
+    @Order(3)
     void findCommentById() throws Exception {
-        Mockito.when(commentService.findCommentById(Mockito.anyLong(), Mockito.anyLong()))
-                .thenReturn(commentMapper.entityToDto(comment));
-
         mockMvc.perform(get("/items/1/comment/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.text").value("Pretty good!"))
-                .andExpect(jsonPath("$.authorName").value("Bob"))
-                .andExpect(jsonPath("$.created").value("2025-10-07T18:30:01"));
+                .andExpect(jsonPath("$.text").value("Pretty Good!"))
+                .andExpect(jsonPath("$.authorName").value("Derek Mann"))
+                .andExpect(jsonPath("$.created").exists())
+                .andExpect(jsonPath("$.updated").isEmpty());
+
     }
 
     @Test
-    void postComment() throws Exception {
-        Mockito.when(commentService.postComment(Mockito.anyLong(), Mockito.anyLong(), Mockito.any(Comment.class)))
-                .thenReturn(commentMapper.entityToDto(comment));
-
-        mockMvc.perform(post("/items/1/comment")
-                        .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"text\": \"Pretty Good!\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.text").value("Pretty good!"))
-                .andExpect(jsonPath("$.authorName").value("Bob"))
-                .andExpect(jsonPath("$.created").value("2025-10-07T18:30:01"));
-    }
-
-    @Test
+    @Order(4)
     void updateComment() throws Exception {
-        Mockito.when(commentService.updateComment(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(), Mockito.any(Comment.class)))
-                .thenReturn(commentMapper.entityToDto(comment));
+        Comment comment = new Comment();
+        comment.setText("Not Bad!");
+
+        String commentJson = objectMapper.writeValueAsString(comment);
 
         mockMvc.perform(patch("/items/1/comment/1")
-                        .header("X-Sharer-User-Id", "1")
+                        .header("X-Sharer-User-Id", "2")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"text\": \"Pretty Good!\"}"))
+                        .content(commentJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.text").value("Pretty good!"))
-                .andExpect(jsonPath("$.authorName").value("Bob"))
-                .andExpect(jsonPath("$.created").value("2025-10-07T18:30:01"));
+                .andExpect(jsonPath("$.text").value("Not Bad!"))
+                .andExpect(jsonPath("$.authorName").value("Derek Mann"))
+                .andExpect(jsonPath("$.created").exists())
+                .andExpect(jsonPath("$.updated").exists());
     }
 
     @Test
+    @Order(5)
     void deleteComment() throws Exception {
         mockMvc.perform(delete("/items/1/comment/1")
-                        .header("X-Sharer-User-Id", 1L))
+                        .header("X-Sharer-User-Id", 2L))
                 .andExpect(status().isOk());
-
-        Mockito.verify(commentService, Mockito.times(1))
-                .deleteComment(Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong());
     }
 }

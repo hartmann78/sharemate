@@ -2,10 +2,10 @@ package com.practice.sharemate.repositoryTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.practice.sharemate.exceptions.BadRequestException;
 import com.practice.sharemate.generators.*;
 import com.practice.sharemate.model.*;
 import com.practice.sharemate.repository.*;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,16 +92,7 @@ public class ItemRepositoryTests {
         Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner, requestOnItem.getId());
         itemOnRequest.setName(null);
 
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
-            if (itemOnRequest.getName() == null || itemOnRequest.getName().isBlank()) {
-                throw new BadRequestException("Название предмета не должно быть пустым!");
-            }
-        });
-
-        String expectedMessage = "Название предмета не должно быть пустым!";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
+        assertThrows(ConstraintViolationException.class, () -> itemRepository.save(itemOnRequest));
     }
 
     @Test
@@ -118,16 +109,12 @@ public class ItemRepositoryTests {
         Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner, requestOnItem.getId());
         itemOnRequest.setDescription(null);
 
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
-            if (itemOnRequest.getDescription() == null || itemOnRequest.getDescription().isBlank()) {
-                throw new BadRequestException("Описание предмета не должно быть пустым!");
-            }
-        });
+        assertThrows(ConstraintViolationException.class, () -> itemRepository.save(itemOnRequest));
 
-        String expectedMessage = "Описание предмета не должно быть пустым!";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
+        item.setName(null);
+        item.setDescription(null);
+        item.setAvailable(null);
+        itemRepository.save(item);
     }
 
     @Test
@@ -144,16 +131,7 @@ public class ItemRepositoryTests {
         Item itemOnRequest = itemGenerator.generateItemWithOwnerIdAndRequestId(owner, requestOnItem.getId());
         itemOnRequest.setAvailable(null);
 
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
-            if (itemOnRequest.getAvailable() == null) {
-                throw new BadRequestException("Статус предмета не должен быть пустым!");
-            }
-        });
-
-        String expectedMessage = "Статус предмета не должен быть пустым!";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
+        assertThrows(ConstraintViolationException.class, () -> itemRepository.save(itemOnRequest));
     }
 
     @Test
