@@ -212,7 +212,7 @@ public class BookingControllerTests {
                 .andExpect(jsonPath("$.item.id").value(itemId))
                 .andExpect(jsonPath("$.item.name").value(item.getName()))
                 .andExpect(jsonPath("$.item.description").value(item.getDescription()))
-                .andExpect(jsonPath("$.item.available").value(item.getAvailable()))
+                .andExpect(jsonPath("$.item.available").value(false))
                 .andExpect(jsonPath("$.item.comments").exists())
                 .andExpect(jsonPath("$.status").value("APPROVED"));
     }

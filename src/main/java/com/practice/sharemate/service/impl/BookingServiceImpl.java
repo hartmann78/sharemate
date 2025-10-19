@@ -108,24 +108,24 @@ public class BookingServiceImpl implements BookingService {
             throw new BadRequestException("Дата и время начала и конца бронирования не должны быть равны!");
         }
 
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
+        Optional<User> findBooker = userRepository.findById(userId);
+        if (findBooker.isEmpty()) {
             throw new UserNotFoundException("Пользователь с id " + userId + " не найден!");
         }
 
-        Optional<Item> item = itemRepository.findById(bookingRequest.getItemId());
-        if (item.isEmpty()) {
+        Optional<Item> findItem = itemRepository.findById(bookingRequest.getItemId());
+        if (findItem.isEmpty()) {
             throw new ItemNotFoundException("Предмет с id " + bookingRequest.getItemId() + " не найден!");
         }
 
-        if (item.get().getAvailable() == false) {
+        if (findItem.get().getAvailable() == false) {
             throw new BadRequestException("Предмет недоступен!");
         }
 
         Booking booking = bookingMapper.requestToEntity(bookingRequest);
 
-        booking.setItem(item.get());
-        booking.setBooker(user.get());
+        booking.setItem(findItem.get());
+        booking.setBooker(findBooker.get());
         booking.setStatus(Booking.BookingStatus.WAITING);
 
         return bookingMapper.entityToDto(bookingRepository.save(booking));
@@ -139,6 +139,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         Long itemId = findBooking.get().getItem().getId();
+
         Optional<Item> findItem = itemRepository.findById(itemId);
         if (findItem.isEmpty()) {
             throw new ItemNotFoundException("Предмет с id " + itemId + " не найден!");
@@ -150,8 +151,12 @@ public class BookingServiceImpl implements BookingService {
 
         Booking updateBooking = findBooking.get();
 
-        if (approved) {
+        if (approved == true) {
             updateBooking.setStatus(Booking.BookingStatus.APPROVED);
+
+            Item item = findItem.get();
+            item.setAvailable(false);
+            itemRepository.save(item);
         } else {
             updateBooking.setStatus(Booking.BookingStatus.REJECTED);
         }

@@ -101,6 +101,8 @@ public class BookingServiceTests {
     void patchBookingApproved() {
         BookingDTO approvedBooking = bookingService.patchBooking(ownerDTO.getId(), bookingDTO.getId(), true);
 
+        itemDTO.setAvailable(false);
+
         assertNotNull(approvedBooking.getId());
         assertEquals(bookingRequest.getStart(), approvedBooking.getStart());
         assertEquals(bookingRequest.getEnd(), approvedBooking.getEnd());
